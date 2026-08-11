@@ -8,5 +8,6 @@ router.post('/', studentController.create);
 router.get('/', studentController.getAll);
 router.get('/:id', studentController.getOne);
 router.put('/:id', studentController.update);
+router.delete('/:id', studentController.delete);
 
 export default router 

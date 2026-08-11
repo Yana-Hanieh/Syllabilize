@@ -50,4 +50,19 @@ export class StudentService{
         }
         return foundStudent;
     }
+
+    delete(id:number): boolean{
+        const index = this.students.findIndex(s => s.studentId === id)
+        if(index === -1){
+            return false
+        }
+        const foundStudent = this.students[index]
+        const classroomId = foundStudent.classroomId
+        const oldClassroom = this.classroomService.getOne(classroomId)
+        if (oldClassroom){
+            oldClassroom.studentList = oldClassroom.studentList.filter(studentId => studentId !== id)
+        }
+        this.students.splice(index,1);
+        return true;
+    }
 }

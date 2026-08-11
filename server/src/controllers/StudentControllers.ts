@@ -20,18 +20,26 @@ export class StudentController{
         const id= Number(req.params.id);
         const result = studentService.getOne(id);
         if(!result){
-            res.status(404).json({message:'Student not found'})
+            return res.status(404).json({message:'Student not found'})
         }
-        res.status(200).json(result);
+        return res.status(200).json(result);
     }
 
     update(req:Request, res:Response){
         const id= Number(req.params.id);
-        const {studentId,studentName,age,classroomId} = req.body;
-        const result = studentService.update(studentId,studentName,age,classroomId);
+        const {studentName,age,classroomId} = req.body;
+        const result = studentService.update(id,studentName,age,classroomId);
          if(!result){
-            res.status(404).json({message:'Student not found'})
+            return res.status(404).json({message:'Student not found'})
         }
-        res.status(200).json(result);
+        return res.status(200).json(result);
+    }
+
+    delete(req:Request, res:Response){
+        const id = Number(req.params.id);
+        const result = studentService.delete(id);
+          if (!result)
+            return res.status(404).json({message:'student not found'});
+        return res.status(200).json({message:'student deleted successfully'});
     }
 }

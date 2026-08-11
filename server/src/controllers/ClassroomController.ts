@@ -39,6 +39,6 @@ export class ClassroomController{
         const result = classroomService.delete(id);//calls the delete function from the classroomService file using the id
         if (!result) //checks if the service returns null, meaning no classrooms were matched with the id
             return res.status(404).json({message:'Classroom not found'});
-        return res.status(200).json(result);
+        return res.status(200).json({message:'classroom deleted successfully'});
     }
 }
