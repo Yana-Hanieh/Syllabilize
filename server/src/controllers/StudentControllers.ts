@@ -24,4 +24,14 @@ export class StudentController{
         }
         res.status(200).json(result);
     }
+
+    update(req:Request, res:Response){
+        const id= Number(req.params.id);
+        const {studentId,studentName,age,classroomId} = req.body;
+        const result = studentService.update(studentId,studentName,age,classroomId);
+         if(!result){
+            res.status(404).json({message:'Student not found'})
+        }
+        res.status(200).json(result);
+    }
 }
