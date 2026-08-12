@@ -3,11 +3,12 @@ import { ClassroomService } from "./ClassroomService";
 
 export class StudentService{
     private students: Student[] = [];
-    private nextStudentId=1;
-    private classroomService: ClassroomService;
+    private nextStudentId = 1;
+    private classroomService: ClassroomService; //stores the injected ClassroomService instance so this class can use it.
 
-    constructor(classroomService: ClassroomService){ //special method that runs automatically when new studentservice runs git 
-        this.classroomService= classroomService
+    //since studentService is dependant on classroomService (student useses data from classroom) we use a constructor
+    constructor(classroomService: ClassroomService){ //special method that runs automatically when new StudentService() is called
+        this.classroomService= classroomService //assigned the dependency here
     }
 
     create(studentName: string, age: number, classroomId: number, courseList: number[]): Student | null{
