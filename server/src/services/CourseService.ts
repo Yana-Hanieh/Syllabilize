@@ -20,7 +20,13 @@ export class CourseService{
         return [...this.courses]
     }
 
-    
+    getOne(id:number): Course | null{
+        const foundCourse = this.courses.find(c => c.courseId === id)
+        if (!foundCourse){
+            return null
+        }
+        return foundCourse
+    }
 
 
 }

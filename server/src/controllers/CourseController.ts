@@ -13,4 +13,13 @@ export class CourseController{
         const result = courseService.getAll();
         return res.status(200).json(result);
     }
+
+    getOne(req:Request, res:Response){
+        const id = Number(req.params.id);
+        const result = courseService.getOne(id);
+        if (!result){
+            return res.status(404).json({message: 'Course not found'})
+        }
+        return res.status(200).json(result)
+    }
 }

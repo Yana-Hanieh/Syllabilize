@@ -6,6 +6,7 @@ const courseController = new CourseController();
 
 router.post('/', courseController.create);
 router.get('/', courseController.getAll);
+router.get('/:id', courseController.getOne);
 
 
 export default router
