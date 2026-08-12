@@ -16,5 +16,11 @@ export class CourseService{
         return newCourse
     }
 
+    getAll(): Course[]{
+        return [...this.courses]
+    }
+
+    
+
 
 }
