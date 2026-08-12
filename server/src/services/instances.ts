@@ -7,5 +7,5 @@ export const classroomService = new ClassroomService(); //creating a classroomSe
 export const studentService = new StudentService(classroomService);
 export const courseService = new CourseService();
 
-//studentService.setCourseService(courseService);
+studentService.setCourseService(courseService);
 courseService.setStudentService(studentService);

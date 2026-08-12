@@ -22,4 +22,22 @@ export class CourseController{
         }
         return res.status(200).json(result)
     }
+
+    update(req:Request, res:Response){
+        const id = Number(req.params.id);
+        const {courseName, studentsId} = req.body
+        const result = courseService.update(id,courseName, studentsId);
+        if (!result){
+            return res.status(404).json({message: 'Course not found'})
+        }
+        return res.status(200).json(result)
+    }
+
+    delete(req:Request, res:Response){
+        const id = Number(req.params.id);
+        const result = courseService.delete(id);
+        if (!result)
+            return res.status(404).json({message:'course not found'});
+        return res.status(200).json({message:'course deleted successfully'});
+    }
 }

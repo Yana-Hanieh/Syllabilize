@@ -1,14 +1,20 @@
 import { Student } from "../interfaces/Student";
 import { ClassroomService } from "./ClassroomService";
+import { CourseService } from "./CourseService";
 
 export class StudentService{
     private students: Student[] = [];
     private nextStudentId = 1;
     private classroomService: ClassroomService; //stores the injected ClassroomService instance so this class can use it.
-
+    private courseService!: CourseService;
+    
     //since studentService is dependant on classroomService (student useses data from classroom) we use a constructor
     constructor(classroomService: ClassroomService){ //special method that runs automatically when new StudentService() is called
         this.classroomService= classroomService //assigned the dependency here
+    }
+
+    setCourseService(courseService: CourseService){
+        this.courseService = courseService;
     }
 
     create(studentName: string, age: number, classroomId: number, courseList: number[]): Student | null{
