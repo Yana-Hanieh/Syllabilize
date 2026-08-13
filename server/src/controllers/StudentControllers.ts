@@ -6,8 +6,8 @@ const studentService = new StudentService(classroomService);
 
 export class StudentController{
     create(req:Request, res:Response){
-        const {studentName,age,classroomId,courseList} = req.body;
-        const result = studentService.create(studentName,age,classroomId,courseList)
+        const {studentName,studentAge,classroomId,courseList} = req.body;
+        const result = studentService.create(studentName,studentAge,classroomId,courseList)
         return res.status(201).json(result) //returns "201" which is the standard "created" status code along with a parsed result data into json
     }
     
@@ -27,8 +27,8 @@ export class StudentController{
 
     update(req:Request, res:Response){
         const id= Number(req.params.id);
-        const {studentName,age,classroomId} = req.body;
-        const result = studentService.update(id,studentName,age,classroomId);
+        const {studentName,studentAge,classroomId} = req.body;
+        const result = studentService.update(id,studentName,studentAge,classroomId);
          if(!result){
             return res.status(404).json({message:'Student not found'})
         }

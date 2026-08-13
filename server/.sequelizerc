@@ -1,0 +1,8 @@
+const path = require('path'); //built-in node.js module for working with files/folder paths
+
+module.exports = {//redirect sequelize-cli's default assumptions to match where the files actually live.
+    'config': path.resolve('config', 'config.js'), //builds an aboslute path (for the db connection settings) pointing at server/config/config.js
+    'models-path': path.resolve('src','models'),
+    'seeders-path': path.resolve('src', 'seeders'),
+    'migrations-path': path.resolve('src', 'migrations')
+}

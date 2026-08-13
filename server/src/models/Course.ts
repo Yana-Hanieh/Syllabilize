@@ -1,5 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/database";
+//import the interfaces
 
 interface CourseAttribute{
     courseId: number; 

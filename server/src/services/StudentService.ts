@@ -17,8 +17,8 @@ export class StudentService{
         this.courseService = courseService;
     }
 
-    create(studentName: string, age: number, classroomId: number, courseList: number[]): Student | null{
-        const newStudent: Student = {studentId:this.nextStudentId++, studentName:studentName, age:age, classroomId:classroomId, courseList:courseList}
+    create(studentName: string, studentAge: number, classroomId: number, courseList: number[]): Student | null{
+        const newStudent: Student = {studentId:this.nextStudentId++, studentName:studentName, studentAge:studentAge, classroomId:classroomId, courseList:courseList}
         this.students.push(newStudent)
         return newStudent
     }
@@ -41,7 +41,7 @@ export class StudentService{
             return null
         }
         foundStudent.studentName= newName //changes the name of the found student directly on the object
-        foundStudent.age= newAge // changes the age of the found student on the object
+        foundStudent.studentAge= newAge // changes the studentAge of the found student on the object
         const oldClassroomId = foundStudent.classroomId //saves the classid of the student before it gets overwritten
 
         if(oldClassroomId !== newClassroomId){ //checks if the old classid is the same as the new one (if the id was changed or not)
