@@ -4,6 +4,7 @@ import express from 'express';
 import ClassroomRoutes from './routes/ClassroomRoutes';
 import StudentRoutes from './routes/StudentRoutes';
 import CourseRoutes from './routes/CourseRouter';
+import './models/associations';
 const app = express();
 
 //middlewares provides a way to add and reuse common functionality across your application's routes and endpoints.
