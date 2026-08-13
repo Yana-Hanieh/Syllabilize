@@ -1,3 +1,4 @@
+//The interface before sequelized was used
 export interface Classroom{
     classroomId: number;
     classroomName: string;
