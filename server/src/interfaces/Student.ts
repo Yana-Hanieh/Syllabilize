@@ -2,7 +2,7 @@
 export interface Student{
     studentId: number;
     studentName: string;
-    studentAge: number;
+    age: number;
     classroomId: number; //foreign key from classroom interface 
     courseList: number[];
 }

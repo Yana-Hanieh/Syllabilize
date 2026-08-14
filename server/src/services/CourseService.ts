@@ -1,77 +1,42 @@
-import { Course } from "../interfaces/Course";
-import { StudentService } from "./StudentService";
+import { Course } from "../models/Course";
+import { Student } from "../models/Student";
 
 export class CourseService{
-    private courses: Course[] = [];
-    private nextCourseId = 1;
-    private studentService!: StudentService; //the definite assignemnt assertion (!) operator is used to ensure typscript that it will be assigned a value later as it only declares it
 
-    setStudentService(studentService: StudentService){
-        this.studentService = studentService;
+    async create ( name: string, studentIds?: number[]): Promise<Course>{
+        const newCourse = await Course.create({courseName:name}); //create and insert a new course record into the DB
+       if (studentIds?.length){ //if an array of studentIds was provided and contains elements, sync the junction table
+        await (newCourse as any).setStudents(studentIds); //.setStudents() is a sequelize generated method that syncs the junction table by overwriting the existing associations
+       }
+        return newCourse;
     }
 
-    create ( name: string, stdId: number[]): Course{
-        const newCourse : Course= {courseId: this.nextCourseId++, courseName: name, studentsId: stdId ?? []} //if stdId is undefined/null, default to empty array
-        this.courses.push(newCourse)
-        return newCourse
+    async getAll(): Promise<Course[]>{
+        return await Course.findAll({include: Student}); //fetches all courses and performs a Join to include related student records
     }
 
-    getAll(): Course[]{
-        return [...this.courses]
+    async getOne(id:number): Promise<Course | null>{ 
+        return await Course.findByPk(id,{include:Student}) //searches for a course by its pk and joins the asssociated student data
     }
 
-    getOne(id:number): Course | null{
-        const foundCourse = this.courses.find(c => c.courseId === id)
-        if (!foundCourse){
-            return null
-        }
-        return foundCourse
-    }
-
-    update(cId:number, newName:string, newStudentId: number[]): Course | null{
-       const foundCourse = this.courses.find(c => c.courseId === cId) //finding course based on matched id
-       if (!foundCourse){
+    async update(cId:number, newName:string, newStudentId: number[]): Promise<Course | null>{
+       const foundCourse = await Course.findByPk(cId) //finding course based on matched id (which is the pk)
+       if (!foundCourse){ //if no course matching the id was found return null
             return null
        }
-       foundCourse.courseName = newName; //change the name of the course directly on the foundcourse object
+       foundCourse.courseName = newName; //change the name of the course directly (locally) on the foundcourse object
 
-       const oldStudentsId = foundCourse.studentsId //saves the current list of students before overwriting it
-       const removedStudents = oldStudentsId.filter(sid=> !newStudentId.includes(sid)) //saves the list of students where the oldStudentId doesnt matche the newStudentId => removed students
-       const addedStudents = newStudentId.filter(sid => !oldStudentsId?.includes(sid)) //saves the list of students where the newstudentId doesnt match the oldStudentId => added students
-
-       removedStudents.forEach(studentId => { //loops around the removed student array and checks each std id
-        const student = this.studentService.getOne(studentId); //looks up the whole student object for the id and saves it
-        if (student){ //safety guard in case student id doesnt match a real student
-            student.courseList = student.courseList.filter(c => c !==cId); //removes the course's id from the student courseList
-        }
-       });
-
-       addedStudents.forEach(studentId => { //loops around the added student array and checks each std id
-        const student = this.studentService.getOne(studentId); //saves each student into a student array
-        if(student){
-            student.courseList.push(cId); //if there is an added student, then add it to the course list
-        }        
-       });
-
-       foundCourse.studentsId = newStudentId; //replaces the course's studentsId with a new list
+       await foundCourse.save(); //save the changes done to the DB
+       await (foundCourse as any).setStudents(newStudentId) //sync the junction table to show the new set of associated student Ids
        return foundCourse; 
     }
 
-    delete(id:number): boolean {
-        const index = this.courses.findIndex(c => c.courseId === id)
-        if (index === -1){
-            return false
-        }
-        const foundCourse = this.courses[index]
-
-        foundCourse.studentsId.forEach(studentsId => {
-            const student = this.studentService.getOne(studentsId);
-            if (student){
-                student.courseList = student.courseList.filter(c => c !==id)
-            }
-        });
-        this.courses.splice(index,1);
-        return true;
+    async delete(id:number): Promise<boolean> {
+        const foundCourse =await Course.findByPk(id) //searches for the course based on matching pk (id)
+        if (!foundCourse) //if no course is matched return false 
+            return false 
+        await foundCourse.destroy() //(cascade: from our migration files) delete the course record from the DB. //Note: CASCADE constraint on foreign keys will automatically clean up junction table entries 
+           return true;
     }
 
 }

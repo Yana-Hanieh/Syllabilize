@@ -1,49 +1,36 @@
-import { Classroom } from "../interfaces/Classroom"; //importing the classroom interface
+import { Classroom } from "../models/Classroom"; //importing the classroom sequelize model 
 export class ClassroomService{
-    private classrooms: Classroom[] = []; //a private variable called classrooms which includes an array of classroom objects
-    private nextClassroomId = 1; 
+    //the classroom model itself reads/writes to the database directly, no need for private attributes (spearate in-memory copy to maintain)
 
-    create(name:string): Classroom | string { //creating an instance of ClassroomService called classroom
-        const newClassroom: Classroom = {classroomId: this.nextClassroomId++, //we assign this specific class object with the nectClassroomId, and increments it for the next object
-                                        classroomName: name,  //assign the classroomName with the name parameter
-                                        studentList:[] } //creates an empty student list
-        this.classrooms.push(newClassroom); //pushes these created parameters into the newly created newClassroom object
-        // const classroomId= newClassroom.classroomId;
-        // const classroomName= newClassroom.classroomName;
-        // const studentList= newClassroom.studentList;
-        // const result= `Classroom ID: ${classroomId} Classsroom Name: ${classroomName} Student List: ${studentList}`;
-        // return result; //returns the created object which will be used by the controller (caller)
-        return newClassroom;
+    async create(name:string): Promise<Classroom>{ //async since talking to a real databse takes time, returning a Promise that resolves to the created classroom
+        return await Classroom.create({classroomName:name}); //sequelize handles id generation and inserting the row into mysql in one call
     }
 
     //the view function has 2 methods, the getAll to view all the classrooms, and getOne to view only one classroom
-    getAll(): Classroom[]{ //shows a table/list of every classroom (names and student counts)
-        return [...this.classrooms] //we return the copy of the array using a spread syntax to ensure data integrity/security from accidental mutation
+    async getAll(): Promise<Classroom[]>{ //shows a table/list of every classroom (names and student counts)
+        return await Classroom.findAll() //a sequelize function .findAll whıch queries and returns every row in the classroom 
     }
 
-    getOne(id:number){//shows full details for one specific classroom (name, studentcount and actual list of students)
-        const foundClassroom = this.classrooms.find(c => c.classroomId === id) //.find() returns the first matching element of undefined if none is matched, and its stored in a variable called foundClass
-        if (!foundClassroom){  //if .find() returns undefined exit early and return null
-            return null;
-        }
-        return foundClassroom; //if a classroom is matched then return it
+    async getOne(id:number): Promise<Classroom | null>{//shows full details for one specific classroom (name, studentcount and actual list of students)
+        return await Classroom.findByPk(id); //returns a classroom where the primary key is matched by the id or null ıf not found
     }
 
-    update(id: number, newName: string): Classroom | null{
-        const foundClassroom = this.classrooms.find (c => c.classroomId === id)
-        if (!foundClassroom){  //if .find() returns undefined exit early and return null
+    async update(id: number, newName: string): Promise<Classroom | null>{
+        const foundClassroom = await Classroom.findByPk(id);
+        if (!foundClassroom){  //if .findByPK() returns undefined/null exit early and return null
             return null;
         }
-        foundClassroom.classroomName = newName; //mutate the exitsting object directly on the classrooms object by changing the classroom name only
+        foundClassroom.classroomName = newName; //mutate the found row's property directlly, same as before, but this only changes it in memory (changing the classroom name only)
+        await foundClassroom.save() //writes the mutated property back to the actual db row, without this the change wouldnt be saved/present
         return foundClassroom; //returns the altered foundClassroom
     }
 
-    delete(id:number): boolean{ //deletes the class, and returns a boolean value
-        const index = this.classrooms.findIndex(c => c.classroomId === id) //firstIndex() returns the position/index of the first object where the id matches
-        if (index === -1){ //guard clause to make sure that the array has an object
+    async delete(id:number): Promise<boolean>{ //deletes the classroom, and returns a boolean value
+        const foundClassroom = await Classroom.findByPk(id); //looks up the row by primary key
+        if (!foundClassroom){ //guard clause in case no classroom matches this id
             return false
         }
-        this.classrooms.splice(index, 1); //.splice() mutates the classes directly, it removes 1 element from the classes array at the specified index
+        await foundClassroom.destroy() //.destroy() a sequelize method which deletes the found classroom (the row) from the database table  
         return true;
     }
 }
