@@ -3,14 +3,21 @@ import { studentService } from '../services/instances';
 
 export class StudentController{
     async create(req:Request, res:Response){
-        const {studentName,age,classroomId,courseList} = req.body; //takes data from the request body section
-        const result = await studentService.create(studentName,age,classroomId,courseList)//saves the data in a result variable 
+        const {studentName,studentAge,classroomId,courseList} = req.body; //takes data from the request body section
+        const result = await studentService.create(studentName,studentAge,classroomId,courseList)//saves the data in a result variable 
         return res.status(201).json(result) //returns "201" which is the standard "created" status code along with a parsed result data into json
     }
     
     async getAll(req:Request, res:Response){
-        const result = await studentService.getAll();
-        return res.status(200).json(result);
+        try{
+            const page = Math.max(1,Number(req.query.page)||1);
+            const limit = Math.max(1,Number(req.query.limit) ||3);
+            const result = await studentService.getAll();
+            return res.status(200).json(result);
+       }
+        catch (error:any){
+            return res.status(500).json({ error: error.message });
+       }
     }
 
     async getOne(req:Request, res:Response){
@@ -24,8 +31,8 @@ export class StudentController{
 
     async update(req:Request, res:Response){
         const id= Number(req.params.id);
-        const {studentName,age,classroomId} = req.body;
-        const result = await studentService.update(id,studentName,age,classroomId);
+        const {studentName,studentAge,classroomId} = req.body;
+        const result = await studentService.update(id,studentName,studentAge,classroomId);
          if(!result){
             return res.status(404).json({message:'Student not found'})
         }

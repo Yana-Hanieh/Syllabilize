@@ -1,3 +1,4 @@
+import { off } from "process";
 import { Course } from "../models/Course";
 import { Student } from "../models/Student";
 
@@ -11,8 +12,18 @@ export class CourseService{
         return newCourse;
     }
 
-    async getAll(): Promise<Course[]>{
-        return await Course.findAll({include: Student}); //fetches all courses and performs a Join to include related student records
+    async getAll(page:number = 1, limit: number = 3){
+        const offset = (page-1) * limit;
+        const {count, rows} = await Course.findAndCountAll({
+            limit: limit, 
+            offset: offset,
+        });
+        return {
+            totalItems: count, 
+            totalPages:Math.ceil(count / limit),
+            currentPage: page, 
+            courses: rows
+        }; //fetches all courses and performs a Join to include related student records
     }
 
     async getOne(id:number): Promise<Course | null>{ 
@@ -35,7 +46,7 @@ export class CourseService{
         const foundCourse =await Course.findByPk(id) //searches for the course based on matching pk (id)
         if (!foundCourse) //if no course is matched return false 
             return false 
-        await foundCourse.destroy() //(cascade: from our migration files) delete the course record from the DB. //Note: CASCADE constraint on foreign keys will automatically clean up junction table entries 
+        await foundCourse.destroy() //(cascade: from our migration files ) delete the course record from the DB. //Note: CASCADE constraint on foreign keys will automatically clean up junction table entries 
            return true;
     }
 

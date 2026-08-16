@@ -7,9 +7,16 @@ export class ClassroomController{
         return res.status(201).json(result) //returns "201" which is the standard "created" status code along with a parsed result data into json
     }
 
-    async getAll (req: Request, res:Response){
-        const result = await classroomService.getAll(); //calls the getAll function from the classroomService file
-        return res.status(200).json(result); //returns "200" which is the standard "ok" status code
+    async getAll(req:Request, res:Response){
+        try{
+            const page = Math.max(1,Number(req.query.page)||1);
+            const limit = Math.max(1,Number(req.query.limit) ||3);
+            const result = await classroomService.getAll();//calls the getAll function from the classroomService file
+            return res.status(200).json(result);//returns "200" which is the standard "ok" status code
+        }
+        catch (error:any){
+            return res.status(500).json({ error: error.message });
+        }
     }
 
     async getOne (req:Request, res:Response){

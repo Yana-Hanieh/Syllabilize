@@ -7,8 +7,18 @@ export class ClassroomService{
     }
 
     //the view function has 2 methods, the getAll to view all the classrooms, and getOne to view only one classroom
-    async getAll(): Promise<Classroom[]>{ //shows a table/list of every classroom (names and student counts)
-        return await Classroom.findAll() //a sequelize function .findAll whıch queries and returns every row in the classroom 
+    async getAll(page:number = 1, limit: number = 3){//shows a table/list of every classroom (names and student counts)
+        const offset = (page-1) * limit;
+        const {count, rows} = await Classroom.findAndCountAll({//a sequelize function .findAll whıch queries and returns every row in the classroom 
+            limit: limit,
+            offset:offset,
+        });
+        return {
+            totalItems: count, 
+            totalPages:Math.ceil(count / limit),
+            currentPage: page, 
+            students: rows
+        }
     }
 
     async getOne(id:number): Promise<Classroom | null>{//shows full details for one specific classroom (name, studentcount and actual list of students)
