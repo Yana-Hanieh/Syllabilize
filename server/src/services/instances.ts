@@ -2,8 +2,10 @@
 import { ClassroomService } from "./ClassroomService";
 import { CourseService } from "./CourseService";
 import { StudentService } from "./StudentService";
+import { UserService } from "./UserService";
 
 export const classroomService = new ClassroomService(); //creating a classroomService instance which will be used in the classroom and the student controller files
 export const studentService = new StudentService();
 export const courseService = new CourseService();
+export const userService = new UserService();
 

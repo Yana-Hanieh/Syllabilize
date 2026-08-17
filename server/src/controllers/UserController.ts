@@ -1,48 +1,47 @@
 import { Request, Response } from "express";
-import { studentService } from '../services/instances';
+import { userService } from "../services/instances";
 
-export class StudentController{
+export class UserController{
     async create(req:Request, res:Response){
-        const {studentName,studentAge,classroomId,courseList} = req.body; //takes data from the request body section
-        const result = await studentService.create(studentName,studentAge,classroomId,courseList)//saves the data in a result variable 
+        const {userName,userEmail, userPassword,studentAge,classroomId,userRole} = req.body; //takes data from the request body section
+        const result = await userService.create(userName,userEmail, userPassword,studentAge,classroomId,userRole)//saves the data in a result variable 
         return res.status(201).json(result) //returns "201" which is the standard "created" status code along with a parsed result data into json
     }
     
     async getAll(req:Request, res:Response){
+        
         const page = Math.max(1,Number(req.query.page)||1);
         const limit = Math.max(1,Number(req.query.limit) ||3);
-        const result = await studentService.getAll();
+        const result = await userService.getAll();
         
         if(!result){
             return res.status(500).json({message:'Internal server error'});
         }
        return res.status(200).json(result);
-
-   
     }
 
-    async getOne(req:Request, res:Response){
-        const id= Number(req.params.id);
-        const result = await studentService.getOne(id);
+    async getOne(req:Request<{id:string}>, res:Response){
+        const id= req.params.id;
+        const result = await userService.getOne(id);
         if(!result){
             return res.status(404).json({message:'Student not found'})
         }
         return res.status(200).json(result);
     }
 
-    async update(req:Request, res:Response){
-        const id= Number(req.params.id);
+    async update(req:Request<{id:string}>, res:Response){
+        const id=req.params.id;
         const {studentName,studentAge,classroomId} = req.body;
-        const result = await studentService.update(id,studentName,studentAge,classroomId);
+        const result = await userService.update(id,studentName,studentAge,classroomId);
          if(!result){
             return res.status(404).json({message:'Student not found'})
         }
         return res.status(200).json(result);
     }
 
-    async delete(req:Request, res:Response){
-        const id = Number(req.params.id);
-        const result = await studentService.delete(id);
+    async delete(req:Request<{id:string}>, res:Response){
+        const id =req.params.id;
+        const result = await userService.delete(id);
           if (!result)
             return res.status(404).json({message:'student not found'});
         return res.status(200).json({message:'student deleted successfully'});

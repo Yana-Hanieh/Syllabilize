@@ -9,15 +9,16 @@ export class CourseController{
     }
 
     async getAll(req:Request, res:Response){
-        try{
-            const page = Math.max (1, Number(req.query.page) || 1);
-            const limit = Math.max (1, Number(req.query.limit) || 3);
-            const result = await courseService.getAll();
-            return res.status(200).json(result);
+        
+        const page = Math.max (1, Number(req.query.page) || 1);
+        const limit = Math.max (1, Number(req.query.limit) || 3);
+        const result = await courseService.getAll();
+      
+        if(!result){
+            return res.status(500).json({message:'Internal server error'});
         }
-        catch (error:any){
-            return res.status(500).json({ error: error.message });
-       }
+        return res.status(200).json(result);
+
     }
 
     async getOne(req:Request, res:Response){

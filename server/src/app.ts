@@ -3,6 +3,7 @@
 import express from 'express';
 import ClassroomRoutes from './routes/ClassroomRoutes';
 import StudentRoutes from './routes/StudentRoutes';
+import UserRoutes from './routes/UserRoute';
 import CourseRoutes from './routes/CourseRouter';
 import './models/associations';
 const app = express();
@@ -12,6 +13,7 @@ app.use(express.json());
 app.use(express.json()) //express.json() returns a middleware function
 app.use ('/api/classrooms', ClassroomRoutes);
 app.use('/api/students',StudentRoutes);
+app.use('/api/users',UserRoutes);
 app.use('/api/courses',CourseRoutes);
 
 //routes
