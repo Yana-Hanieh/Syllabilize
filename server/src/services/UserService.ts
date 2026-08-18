@@ -1,9 +1,11 @@
 import { User } from "../models/Users";
+import bcrypt from 'bcrypt';
 
 export class UserService{
 
     async create(userName: string, userEmail: string, userPassword:string, studentAge: number, classroomId: number, courseIds?: number[]): Promise<User>{
-        const newStudent = await User.create( {userName, userEmail, userPassword,studentAge,classroomId, userRole:'student'}); //the password has to be hashed before saving
+        const hashedPassword = await bcrypt.hash(userPassword,10);
+        const newStudent = await User.create( {userName, userEmail, userPassword:hashedPassword,studentAge,classroomId, userRole:'student'}); //the password has to be hashed before saving
         //create and insert the new student record into the database
         if (courseIds?.length){ //if an array of courseIdsawas provided and contains elements, sync the junction table
             await (newStudent as any).setCourses(courseIds); //.setCourses() is a sequelize generated method that syncs the junction table by overwriting the existing associations
