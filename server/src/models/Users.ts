@@ -43,20 +43,22 @@ User.init(
     userEmail:{
         type:DataTypes.STRING, 
         allowNull:false,
+        unique:true,
     },
-    userPassword:{
-        type:DataTypes.ENUM('admin', 'student'), 
-        allowNull:false,
+
+    userPermissions:{
+        type:DataTypes.STRING, 
+        allowNull:true,
     },
         
-    userPermissions: {
+    userPassword: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
     },
     
     userRole:{
-        type:DataTypes.STRING, 
-        allowNull:true,
+        type:DataTypes.ENUM('admin', 'student'),
+        allowNull:false,
     },  
     
     studentId:{
@@ -78,6 +80,6 @@ User.init(
     }, 
     {
         sequelize, 
-        tableName:'Students'
+        tableName:'Users'
     }
 )
