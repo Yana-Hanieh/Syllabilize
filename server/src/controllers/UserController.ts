@@ -3,8 +3,8 @@ import { userService } from "../services/instances";
 
 export class UserController{
     async create(req:Request, res:Response){
-        const {userName,userEmail, userPassword,studentAge,classroomId,userRole} = req.body; //takes data from the request body section
-        const result = await userService.create(userName,userEmail, userPassword,studentAge,classroomId,userRole)//saves the data in a result variable 
+        const {userName,userEmail, userPassword,studentAge,classroomId,courseIds} = req.body; //takes data from the request body section
+        const result = await userService.create(userName,userEmail, userPassword,studentAge,classroomId,courseIds)//saves the data in a result variable 
         return res.status(201).json(result) //returns "201" which is the standard "created" status code along with a parsed result data into json
     }
     

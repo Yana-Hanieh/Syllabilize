@@ -12,7 +12,7 @@ export class CourseController{
         
         const page = Math.max (1, Number(req.query.page) || 1);
         const limit = Math.max (1, Number(req.query.limit) || 3);
-        const result = await courseService.getAll();
+        const result = await courseService.getAll(); 
       
         if(!result){
             return res.status(500).json({message:'Internal server error'});

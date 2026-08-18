@@ -1,38 +1,23 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/database";
 
-interface StudentCoursesAttributes{
-    studentCourseId:number;
-    studentId: number;
-    classroomId:number;
-}
-
-interface StudentCoursesCreationAttributes extends Optional<StudentCoursesAttributes, 'studentCourseId'>{}
-
-export class StudentCourses extends Model <StudentCoursesAttributes, StudentCoursesCreationAttributes> implements StudentCoursesAttributes{
-    public studentCourseId!:number;
-    public studentId!: number;
-    public classroomId!:number;
-}
+export class StudentCourses extends Model {}
 
 StudentCourses.init(
     {
-        studentCourseId:{
-            type: DataTypes.INTEGER,
-            autoIncrement:true,
-            primaryKey:true,
-        },
         studentId:{
             type: DataTypes.INTEGER,
-            allowNull:false,
+            primaryKey:true,
         },
-        classroomId:{
-                type:DataTypes.INTEGER, 
-                allowNull:false, 
+        courseId:{
+            type:DataTypes.INTEGER, 
+            primaryKey:true, 
         },
     }, 
+
     {
         sequelize, 
-        tableName:'Students'
+        tableName:'StudentCourses',
+        timestamps:true, //since the migration tables included date created we have to set the timestamps to true, otherwise we set them to false
     }
 )
