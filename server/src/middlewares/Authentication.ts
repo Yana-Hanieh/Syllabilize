@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from 'jsonwebtoken';
 
-export function authentication(req:Request, res:Response, next:NextFunction){
+export function authentication(req:Request, res:Response, next:NextFunction){ //the middleware function which gets called directly on every request
     const authHeader = req.headers.authorization; //saves the header 'Bearer oifhv' or undefined. Bearer prefix is used to indicate that whoever holds/bears this token is authenticated
     //req.headers is an obj containing http headers .authorization accesses the authorization property if it was added by the client
     if (!authHeader || !authHeader.startsWith('Bearer ')) { //checks if the header doesnt start with Bearer, .startsWith returns a boolean value only (true or false) 
