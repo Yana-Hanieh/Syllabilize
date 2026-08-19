@@ -21,4 +21,7 @@ export class AuthService{
 
         return token;
     }
+
+    //there will be no logout endpoint, since the logout happens in the frontend 
+    //in other endpoints we used .destroy(), we cant use it here since that would cause the user to be deleted not just logged out
 }
