@@ -9,7 +9,7 @@ export function authentication(req:Request, res:Response, next:NextFunction){ //
     }
     const token = authHeader.split(' ')[1]; //splits the string into ["Bearer", "oidjcn"], grab index 1
     //we split them since jwt.verify would fail if we keep Bearer in the header
-    
+   
     try {
         const verified = jwt.verify(token, process.env.JWT_SECRET as string);
         (req as any).user = verified //attach decoded {userID, userRole} to the request

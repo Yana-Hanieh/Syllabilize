@@ -12,7 +12,7 @@ export class UserController{
         
         const page = Math.max(1,Number(req.query.page)||1);
         const limit = Math.max(1,Number(req.query.limit) ||3);
-        const result = await userService.getAll();
+        const result = await userService.getAll(page,limit);
         
         if(!result){
             return res.status(500).json({message:'Internal server error'});
@@ -24,15 +24,19 @@ export class UserController{
         const id= req.params.id;
         const result = await userService.getOne(id);
         if(!result){
-            return res.status(404).json({message:'Student not found'})
+            return res.status(404).json({message:'User not found'})
         }
         return res.status(200).json(result);
     }
 
     async update(req:Request<{id:string}>, res:Response){
-        const id=req.params.id;
-        const {studentName,studentAge,classroomId} = req.body;
-        const result = await userService.update(id,studentName,studentAge,classroomId);
+        const targetId=req.params.id;
+        const requester = (req as any).user; //{userId, userRole} from the token
+        if (requester. userRole !== 'admin' && requester.userId !== targetId){
+            return res.status(403).json({message:'You can only update your own profile'})
+        }
+        const {userName,studentAge,classroomId} = req.body;
+        const result = await userService.update(targetId,userName,studentAge,classroomId);
          if(!result){
             return res.status(404).json({message:'Student not found'})
         }

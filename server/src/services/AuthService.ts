@@ -13,10 +13,11 @@ export class AuthService{
         if(!passwordMatched){ //if the password comparison fails reject authentication
             throw new Error('Invalid credentails')
         }
+     
         const token = jwt.sign( //generate a signed JWT (json web token) containing essential user details
             {userId: user.userId, userRole:user.userRole}, //payload claims attached to the token
             process.env.JWT_SECRET as string, //secret key thats loaded from .env
-            {expiresIn:'1h'} //set token expiration to 1 hr
+            {expiresIn:'24h'} //set token expiration to 1 hr
         );
 
         return token;

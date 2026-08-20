@@ -11,6 +11,7 @@ export function authorization(allowedRoles: string[]){ //a function which is cal
         if(!allowedRoles.includes(user.userRole)){ //if the userRole is not an admin return 403 status error
             return res.status(403).json({message:'Forbidden: you are not authorized for this action'})
         }
+        
             next();
     }
 }

@@ -7,9 +7,9 @@ const router = Router();
 const userController = new UserController();
 
 router.post('/', authentication, authorization(['admin']), userController.create); //registering students, admin access only
-router.get('/', userController.getAll);
-router.get('/:id', userController.getOne);
-router.put('/:id', userController.update);
-router.delete('/:id', userController.delete);
+router.get('/', authentication, authorization(['admin']), userController.getAll);
+router.get('/:id', authentication, userController.getOne);
+router.put('/:id', authentication, userController.update);
+router.delete('/:id', authentication, authorization(['admin']), userController.delete);
 
 export default router 

@@ -11,7 +11,7 @@ export class ClassroomController{
   
         const page = Math.max(1,Number(req.query.page)||1);
         const limit = Math.max(1,Number(req.query.limit) ||3);
-        const result = await classroomService.getAll();//calls the getAll function from the classroomService file
+        const result = await classroomService.getAll(page,limit);//calls the getAll function from the classroomService file
        
         if(!result){
             return res.status(500).json({message:'Internal server error'});

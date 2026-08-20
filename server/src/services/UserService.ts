@@ -33,11 +33,21 @@ export class UserService{
         if(!foundUser){ //if no student was found
             return null
         }
-        foundUser.userName= newName //changes the name of the found student directly on the object
-        foundUser.studentAge= newAge //changes the studentAge of the found user on the object
-        foundUser.classroomId = newClassroomId //changes the classroom id of the found student on the object
-        await foundUser.save() //save the changes done to the DB
-        return foundUser;
+        
+        if(newName){
+            foundUser.userName= newName //changes the name of the found student directly on the object
+            await foundUser.save() //save the changes done to the DB
+        }
+         if(newAge !== undefined){
+            foundUser.studentAge= newAge //changes the studentAge of the found user on the object
+            await foundUser.save() //save the changes done to the DB
+        }
+         if(newClassroomId !== undefined){
+            foundUser.classroomId = newClassroomId //changes the classroom id of the found student on the object
+            await foundUser.save() //save the changes done to the DB
+        }
+
+     return foundUser;
     }
 
     async delete(userId:string): Promise<boolean>{

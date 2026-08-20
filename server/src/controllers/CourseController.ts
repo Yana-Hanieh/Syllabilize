@@ -12,7 +12,7 @@ export class CourseController{
         
         const page = Math.max (1, Number(req.query.page) || 1);
         const limit = Math.max (1, Number(req.query.limit) || 3);
-        const result = await courseService.getAll(); 
+        const result = await courseService.getAll(page,limit); 
       
         if(!result){
             return res.status(500).json({message:'Internal server error'});
@@ -32,8 +32,8 @@ export class CourseController{
 
     async update(req:Request, res:Response){
         const id = Number(req.params.id);
-        const {courseName, studentsId} = req.body
-        const result = await courseService.update(id,courseName, studentsId);
+        const {newCourseName, newStudentId} = req.body
+        const result = await courseService.update(id,newCourseName, newStudentId);
         if (!result){
             return res.status(404).json({message: 'Course not found'})
         }

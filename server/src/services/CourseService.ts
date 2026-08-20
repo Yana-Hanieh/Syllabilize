@@ -1,6 +1,6 @@
 import { off } from "process";
 import { Course } from "../models/Course";
-import { Student } from "../models/Student";
+import { User } from "../models/Users";
 
 export class CourseService{
 
@@ -27,18 +27,24 @@ export class CourseService{
     }
 
     async getOne(id:number): Promise<Course | null>{ 
-        return await Course.findByPk(id,{include:Student}) //searches for a course by its pk and joins the asssociated student data
+        return await Course.findByPk(id,{include:User}) //searches for a course by its pk and joins the asssociated student data
     }
 
-    async update(cId:number, newName:string, newStudentId: number[]): Promise<Course | null>{
-       const foundCourse = await Course.findByPk(cId) //finding course based on matched id (which is the pk)
+    async update(id:number, newCourseName?:string, newStudentId?: number[]): Promise<Course | null>{
+       const foundCourse = await Course.findByPk(id) //finding course based on matched id (which is the pk)
        if (!foundCourse){ //if no course matching the id was found return null
             return null
        }
-       foundCourse.courseName = newName; //change the name of the course directly (locally) on the foundcourse object
 
-       await foundCourse.save(); //save the changes done to the DB
-       await (foundCourse as any).setStudents(newStudentId) //sync the junction table to show the new set of associated student Ids
+       if(newCourseName){  //safety guard that checks if new course name is provided
+        foundCourse.courseName = newCourseName; //change the name of the course directly (locally) on the foundcourse object
+        await foundCourse.save();//save the changes done directly to the DB
+       }
+      
+       if (Array.isArray(newStudentId)){ //safety guard that ensures that the newStudentId is a valid array before updating relationships
+        await (foundCourse as Course & { setUsers: (ids: number[]) => Promise<void> }).setUsers(newStudentId); //overwrite the junction table entries to sync the new list of associated student Ids
+        //as Course is a type assertion which is similar to as any, but more specififc
+    }
        return foundCourse; 
     }
 
