@@ -62,8 +62,7 @@ User.init(
     },  
     
     studentId:{
-        type:DataTypes.INTEGER, 
-        autoIncrement:true,
+        type:DataTypes.INTEGER,
         unique:true,
         allowNull:true, 
     },
