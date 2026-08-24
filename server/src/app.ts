@@ -7,6 +7,7 @@ import ClassroomRoutes from './routes/ClassroomRoutes';
 import UserRoutes from './routes/UserRoute';
 import CourseRoutes from './routes/CourseRouter';
 import AuthRoutes from './routes/AuthRoute';
+import uploadRoutes from './routes/uploadRoute';
 import './models/associations';
 const app = express();
 
@@ -22,6 +23,7 @@ app.use('/api/classrooms', ClassroomRoutes);
 app.use('/api/users',UserRoutes);
 app.use('/api/courses',CourseRoutes);
 app.use('/api/auth',AuthRoutes);
+app.use('/api/upload',uploadRoutes);
 
 
 //routes
