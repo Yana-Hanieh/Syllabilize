@@ -1,13 +1,13 @@
 //this file defines what the app does (middlewares, routes)
 //its exports the Express app but never calls .listen()
-import express from 'express';
+import express, { urlencoded } from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import ClassroomRoutes from './routes/ClassroomRoutes';
 import UserRoutes from './routes/UserRoute';
 import CourseRoutes from './routes/CourseRouter';
 import AuthRoutes from './routes/AuthRoute';
-import uploadRoutes from './routes/uploadRoute';
+import uploadRoutes from './routes/UploadRoute';
 import './models/associations';
 const app = express();
 
@@ -18,6 +18,7 @@ app.use(cors({
 }));
 app.use(express.json()); //express.json() returns a middleware function
 app.use(cookieParser()); 
+app.use(urlencoded({extended: true}))
 
 app.use('/api/classrooms', ClassroomRoutes);
 app.use('/api/users',UserRoutes);

@@ -2,7 +2,7 @@ import {Router} from 'express';
 import { authentication } from '../middlewares/Authentication';
 import { authorization } from '../middlewares/Authorization';
 import { uploadSingleImage } from '../middlewares/upload';
-import { UploadController } from '../controllers/uploadController';
+import { UploadController } from '../controllers/UploadController';
 
 const router = Router();
 const uploadController = new UploadController();
