@@ -11,7 +11,7 @@ export class AuthController{
                 httpOnly:true, //js on the frontend can never read this cookie 
                 secure:process.env.NODE_ENV === 'production', //only requires https when in production/development environment
                 //if secure: true then sends the cookie to an encrypted https connection not a plain http, this prevents the cookie from being visible to anyone on an unencrypted connection
-                sameSite: 'strict', //cookie only sent for rewuests originating from our own site only
+                sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax', //strict: cookie only sent for requests originating from our own site only; lax: allows local dev cross-port cookies
                 maxAge: 24 * 60 * 60 * 1000, //1hr that matches the JWT expired in (always in millisec)
             });
 
