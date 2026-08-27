@@ -20,7 +20,7 @@ function App() {
           <Route path='/student/dashboard' element={<DashboardPage role='student'/>} />
 
           {/* fallback for unhandled routes */}
-          <Route path='*' element={<Navigate to='login' replace/>} />
+          <Route path='*' element={<Navigate to='/login'/>} />
 
         </Routes>
       </div>
