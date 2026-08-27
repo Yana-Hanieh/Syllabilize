@@ -1,5 +1,5 @@
 import { useState } from "react";
-import TextInput from "../generalComponents/TextInput";
+import TextInput from "../components/generalComponents/TextInput";
 
 function LoginPage(){
     const [role, setRole] = useState('student');
@@ -36,7 +36,7 @@ function LoginPage(){
     };
 
     return(
-        <div className="flex items-center justify-center bg-neutral-100 min-h-screen">
+        <div className="flex items-center justify-center">
             <div className="sm:w-full max-w-sm bg-white shadow-sm rounded-xl border border-neutral-100 p-8">
                 <h1 className="text-center pb-4 text-2xl text-neutral-600 font-semibold">WELCOME BACK</h1>
                 

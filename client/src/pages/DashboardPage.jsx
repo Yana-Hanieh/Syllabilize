@@ -1,13 +1,17 @@
 import { useState } from "react";
-import TextInput from "../generalComponents/TextInput";
-import TabButton from '../reusableUiComponents/TabButton';
+import TextInput from "../components/generalComponents/TextInput";
+import SideBar from "../components/generalComponents/SideBar";
+import TabButton from '../components/reusableUiComponents/TabButton';
 
-function LoginPage(){
-
+function DashboardPage({role}){
     return(
-        <div className="flex items-center justify-center bg-neutral-100 min-h-screen">
-         
+        <div className="flex flex-row">
+            <SideBar/>
+            <div className="flex items-center justify-center">
+                welcome to {role} dashboard
+           
+            </div>
         </div>
     );
 }
-export default LoginPage
+export default DashboardPage

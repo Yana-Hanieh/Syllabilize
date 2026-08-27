@@ -5,7 +5,7 @@ import DashboardPage from './pages/DashboardPage';
 
 function App() {
   return (
-    <div className="min-h-screen">
+    <div className="bg-neutral-100 min-h-screen">
       {/* sidebar */}
       {/* searchbar */}
       <div className="">
