@@ -1,21 +1,41 @@
 @import "tailwindcss";
 
 @theme {
+  
   --color-primary:#0576B3;
   --color-primary-light: #B5F8FE;
   --color-secondary: #FFC247;
   --color-secondary-light: #FED65D;
+
   --color-shadowColor: #94a3b8;
   --color-hoverColor: #f3f4f4;  
+
   --color-neutral-100: #F5F7FA;
   --color-neutral-300: #D9E1E8;
   --color-neutral-600: #5B6B79;
+  --color-neutral-800: #2e363d;
   
   --breakpoint-mobile: 460px; /* create a new screen breakpoint called mobile  */
   --breakpoint-tiny: 260px;
   --breakpoint-yana: 230px;
   /* Adding a ultra-wide desktop breakpoint (e.g., 1920px) */
   --breakpoint-3xl: 120rem;  
+}
+
+.dark{
+  /* Brand accents brightened slightly for dark surfaces */
+  --color-primary:#38bdf8;
+  --color-primary-light: #0284c7;
+  --color-secondary: #ffd580;
+  --color-secondary-light: #ffc247;
+
+  --color-shadowColor: #020617;
+  --color-hoverColor: #1e293b; 
+
+  --color-neutral-100: #0f172a; /* Main background */
+  --color-neutral-300: #1e293b; /* Cards/Containers */
+  --color-neutral-600: #94a3b8; /* Muted text */
+  --color-neutral-800: #f8fafc; /* Primary text */
 }
 
 :root{
