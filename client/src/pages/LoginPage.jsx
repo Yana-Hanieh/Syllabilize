@@ -1,4 +1,5 @@
 import { useState } from "react";
+import TextInput from "../generalComponents/TextInput";
 
 function LoginPage(){
     const [role, setRole] = useState('student');
@@ -35,10 +36,56 @@ function LoginPage(){
     };
 
     return(
-        <div className="flex flex-col gap-10 p-30 items-center bg-primary min-h-screen">
-            <div className="flex flex-row gap-10 ring-4 ring-red-500">
-                <button className="border rounded-xl px-4 py-2 text-xl">Student</button>
-                <button className="border rounded-xl px-4 py-2 text-xl">Admin</button>
+        <div className="flex items-center justify-center bg-neutral-100 min-h-screen">
+            <div className="sm:w-full max-w-sm bg-white shadow-sm rounded-xl border border-neutral-100 p-8">
+                <h1 className="text-center pb-4 text-2xl text-neutral-600 font-semibold">WELCOME BACK</h1>
+                
+                {/* Role toggle */}
+                <div className="relative flex mb-3 p-1 rounded-full bg-neutral-100">
+                    <button 
+                        type ="button"
+                        onClick={() => setRole('student')}
+                        className={`flex-1 py-2 rounded-full text-md font-medium transition-colors cursor-pointer ${role === 'student'?'bg-primary text-white':'text-neutral-600'}`}>
+                        Student
+                    </button>
+                    <button 
+                        type= "button"
+                        onClick={() => setRole('admin')}
+                        className={`flex-1 py-2 rounded-full text-md font-medium  transition-colors cursor-pointer ${role === 'admin'? 'bg-primary text-white':'text-neutral-600'}`}>
+                        Admin
+                    </button>
+                </div>
+
+                {/* Data entry */}
+                <form 
+                    onSubmit={handleSubmit}
+                    className="flex flex-col gap-4">
+                        <TextInput
+                            type="email"
+                            placeholder="Email" 
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                       
+                        <TextInput 
+                            type="password" 
+                            placeholder="Password" 
+                            value={password}
+                            onChange={(p) => setPassword(p.target.value)}
+                            required
+                        />
+
+                        {error && <p className="text-sm text-red-500 text-center">{error}</p>}
+
+                        <button
+                            type='submit'
+                            className="py-2 rounded-full bg-neutral-100 hover:bg-secondary text-neutral-600 cursor-pointer">
+                            Login
+                        </button>
+
+                </form>
+               
             </div>
         </div>
     )
