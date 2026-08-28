@@ -1,19 +1,24 @@
 import { useState } from "react";
 import TextInput from "../components/reusableUiComponents/TextInput";
+import { useNavigate } from "react-router-dom";
 
 function LoginPage(){
     const [role, setRole] = useState('student');
     const[email,setEmail] = useState('');
     const[password,setPassword] = useState('');
     const[error,setError] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) =>{
         e.preventDefault();
-        setError('');
+      setError('');
+        const targetPath = me.userRole ==='admin' ? '/admin/students' : '/student/courses'
+        navigate(targetPath); 
+  
 
         const res = await fetch('http://localhost:300/api/auth/login',{
             method: 'POST', 
-            header: {'Content-Type': 'application/json'},
+            headers: {'Content-Type': 'application/json'},
             credentials: 'include', //required for the httpOnly cookie to be set
             body: JSON.stringify({email,password}), //saves the email and password in the body variable
         });
@@ -32,7 +37,6 @@ function LoginPage(){
             setError(`This account is registered as ${me.userRole}, not ${role}. Please try again.`);
             return;
         }
-        window.location.href = me.userRole === 'admin'? '/admin/dashboard': '/student/dashboard'; //changes the url based on the role
     };
 
     return(

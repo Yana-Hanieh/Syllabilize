@@ -11,16 +11,19 @@ function App() {
       <div className="">
         <Routes>
           {/* default route */}
-          <Route path='/' element={<Navigate to ='/login'/>} />
+          <Route path='/' element={<Navigate to ='/login' replace/>} />
 
           <Route path ='/login' element ={<LoginPage/>}/>
 
+          <Route path='/admin' element={<Navigate to='admin/students' replace/>} /> 
+          <Route path='/student' element={<Navigate to='student/courses' replace/>} />
+
           {/* routes the user to the dashboard based on their respective role */}
-          <Route path='/admin/dashboard' element={<DashboardPage role='admin'/>} /> 
-          <Route path='/student/dashboard' element={<DashboardPage role='student'/>} />
+          <Route path='/admin/*' element={<DashboardPage role='admin'/>} /> 
+          <Route path='/student/*' element={<DashboardPage role='student'/>} />
 
           {/* fallback for unhandled routes */}
-          <Route path='*' element={<Navigate to='/login'/>} />
+          <Route path='*' element={<Navigate to='/login' replace/>} />
 
         </Routes>
       </div>
