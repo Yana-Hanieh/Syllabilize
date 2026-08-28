@@ -1,5 +1,5 @@
 import { useState } from "react";
-import TextInput from "../components/generalComponents/TextInput";
+import TextInput from "../components/reusableUiComponents/TextInput";
 import SideBar from "../components/generalComponents/SideBar";
 import TabButton from '../components/reusableUiComponents/TabButton';
 
