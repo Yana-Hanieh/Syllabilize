@@ -31,7 +31,7 @@ function SideBar({userRole = 'student', userName='John Doe', profilePicUrl=null}
         />
       )}
 
-      <div className={`bg-white shadow-sm z-50 rounded-r-xl absolute sm:relative flex flex-col transition-all duration-300 ease-in-out sm:pt-3
+      <div className={`bg-white dark:bg-neutral-200 shadow-sm z-50 rounded-r-xl absolute sm:relative flex flex-col transition-all duration-300 ease-in-out sm:pt-3
               ${isCollapsed ? `w-16 sm:w-20 gap-5 items-center pb-6 ` : `w-2/3 h-full sm:h-screen sm:w-65 gap-3`}`}
             >
               

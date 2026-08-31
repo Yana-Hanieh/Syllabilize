@@ -4,6 +4,7 @@ import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 
 function App() {
+  
   return (
     <div className="bg-neutral-100 min-h-screen">
       {/* sidebar */}
@@ -11,7 +12,7 @@ function App() {
       <div className="">
         <Routes>
           {/* default route */}
-          <Route path='/' element={<Navigate to ='/login' replace/>} />
+          <Route path='/' element={<Navigate to ='/auth/login' replace/>} />
 
           <Route path ='/login' element ={<LoginPage/>}/>
 

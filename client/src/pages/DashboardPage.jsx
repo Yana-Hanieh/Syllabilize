@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import TextInput from "../components/reusableUiComponents/TextInput";
 import SideBar from "../components/generalComponents/SideBar";
@@ -7,7 +7,18 @@ import ThemeToggle from "../components/reusableUiComponents/ThemeToggle";
 
 function DashboardPage({role}){
     const location = useLocation();
-    const [darkMode, setDarkMode] = useState(false);
+    const [theme, setTheme] = useState(false);
+    
+    useEffect(() => {
+        const root = document.documentElement;
+        if(theme === false){
+            root.classList.add("dark");
+        }else{
+            root.classList.remove("dark");
+        }
+        localStorage.setItem("theme", theme);
+    }, [theme]);
+
     return(
         <div className="flex flex-row">
             <SideBar userRole={role}/>
@@ -16,8 +27,8 @@ function DashboardPage({role}){
             {location.pathname.includes('/courses') && <h2>Courses List View</h2>}
             {location.pathname.includes('/classrooms') && <h2>Classrooms View</h2>}
             <ThemeToggle
-                isDark={darkMode}
-                onToggle={() => setDarkMode(!darkMode)}
+                isDark={theme}
+                onToggle={() => setTheme(!theme)}
             />
             </main>
         </div>

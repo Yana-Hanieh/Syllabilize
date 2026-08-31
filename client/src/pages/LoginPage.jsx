@@ -61,8 +61,8 @@ function LoginPage(){
 
     return(
         <div className="flex min-h-screen items-center justify-center">
-            <div className="sm:w-full max-w-sm bg-white shadow-sm rounded-xl border border-neutral-100 p-8">
-                <h1 className="text-center pb-4 text-2xl text-neutral-600 font-semibold">WELCOME BACK</h1>
+            <div className="sm:w-full max-w-sm bg-white dark:bg-neutral-200 shadow-sm rounded-xl border border-neutral-100 p-8">
+                <h1 className="text-center pb-4 text-2xl text-neutral-600 dark:text-gray-300 font-semibold">WELCOME BACK</h1>
                 
                 {/* Role toggle */}
                 <div className="relative flex mb-3 rounded-full bg-neutral-100">
@@ -71,14 +71,14 @@ function LoginPage(){
                         label='Student'
                         onClick={() => setRole('student')}
                         isActive={role === 'student'}
-                        className={`flex-1 py-2 rounded-full text-md font-medium justify-center`}
+                        className={`flex-1 py-2 rounded-full text-md font-medium justify-center dark:text-gray-200`}
                     />
 
                      <TabButton
                         label='Admin'
                         onClick={() => setRole('admin')}
                         isActive={role === 'admin'}
-                        className={`flex-1 py-2 rounded-full text-md font-medium justify-center`}
+                        className={`flex-1 py-2 rounded-full text-md font-medium justify-center dark:text-gray-200`}
                     />
                     
                 </div>
