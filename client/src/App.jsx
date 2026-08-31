@@ -1,7 +1,7 @@
 import './App.css';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
-import DashboardPage from './pages/DashboardPage';
+import DashboardLayout from './components/reusableUiComponents/DashboardLayout';
 
 function App() {
   
@@ -20,8 +20,8 @@ function App() {
           <Route path='/student' element={<Navigate to='student/courses' replace/>} />
 
           {/* routes the user to the dashboard based on their respective role */}
-          <Route path='/admin/*' element={<DashboardPage role='admin'/>} /> 
-          <Route path='/student/*' element={<DashboardPage role='student'/>} />
+          <Route path='/admin/*' element={<DashboardLayout role='admin'/>} /> 
+          <Route path='/student/*' element={<DashboardLayout role='student'/>} />
 
           {/* fallback for unhandled routes */}
           <Route path='*' element={<Navigate to='/login' replace/>} />
