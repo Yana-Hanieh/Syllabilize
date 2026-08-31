@@ -106,7 +106,7 @@ function LoginPage(){
                         {error && <p className="text-sm text-red-500 text-center">{error}</p>}
                         <button
                             type='submit'
-                            className="py-2 rounded-full bg-neutral-100 hover:bg-secondary text-neutral-600 cursor-pointer">
+                            className="py-2 rounded-full bg-neutral-100  hover:bg-secondary text-neutral-600 dark:hover:text-black cursor-pointer">
                             Login
                         </button>
 
