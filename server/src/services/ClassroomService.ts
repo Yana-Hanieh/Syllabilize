@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import { Classroom } from "../models/Classroom"; //importing the classroom sequelize model 
 export class ClassroomService{
     //the classroom model itself reads/writes to the database directly, no need for private attributes (spearate in-memory copy to maintain)
@@ -7,12 +8,16 @@ export class ClassroomService{
     }
 
     //the view function has 2 methods, the getAll to view all the classrooms, and getOne to view only one classroom
-    async getAll(page:number = 1, limit: number = 3){//shows a table/list of every classroom (names and student counts)
+    async getAll(page:number = 1, limit: number = 3, name?: string){//shows a table/list of every classroom (names and student counts)
         const offset = (page-1) * limit;
+        const where = name ? { name: {[Op.like]: `%${name}%`}}: {};
+
         const {count, rows} = await Classroom.findAndCountAll({//a sequelize function .findAll whıch queries and returns every row in the classroom 
+            where,
             limit: limit,
             offset:offset,
         });
+
         return {
             totalItems: count, 
             totalPages:Math.ceil(count / limit),

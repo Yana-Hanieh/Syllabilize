@@ -1,6 +1,8 @@
 import { off } from "process";
 import { Course } from "../models/Course";
 import { User } from "../models/Users";
+import { Op } from "sequelize"; //we import operators from sequelize used for the like operator in the getAll() endpoint
+
 
 export class CourseService{
 
@@ -12,12 +14,20 @@ export class CourseService{
         return newCourse;
     }
 
-    async getAll(page:number = 1, limit: number = 3){
+    async getAll(page:number = 1, limit: number = 3, name?: string){
         const offset = (page-1) * limit;
+
+        //checks if there is a name
+        //if there is, it checks if the "name" matches the value of any column in the db
+        //if there isnt, name becomes an empty object(undefined) => dont filter by name
+        const where = name ? { name: {[Op.like]: `%${name}%`}} : {}; 
+       
         const {count, rows} = await Course.findAndCountAll({
+            where, 
             limit: limit, 
             offset: offset,
         });
+
         return {
             totalItems: count, 
             totalPages:Math.ceil(count / limit),

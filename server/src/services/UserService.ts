@@ -39,9 +39,16 @@ export class UserService{
         return newStudent;
     }
 
-    async getAll(page:number = 1, limit: number = 3){
+    async getAll(page:number = 1, limit: number = 3, name?: string){
         const offset = (page-1) * limit;
-        const {count, rows} = await User.findAndCountAll({limit, offset});
+        const where = name ? {name : {[Op.like] : `%${name}%`}} : {}
+        
+        const {count, rows} = await User.findAndCountAll({ 
+            where, 
+            limit: limit, 
+            offset: offset,
+        });
+        
         return {
             totalItems: count, 
             totalPages:Math.ceil(count / limit),
