@@ -9,7 +9,12 @@ import { ImSearch } from "react-icons/im";
 
 function DashboardPage({role}){
     const location = useLocation();
-    const [theme, setTheme] = useState(false);
+
+    //lazy initializer (when you initialize a function inside a state)
+    const [theme, setTheme] = useState(() => {
+        const savedTheme = localStorage.getItem("theme"); //retrieves the initial value of the theme from the localStorage (true or false)
+        return savedTheme === "true"; //if returns a boolean value instead of a string value: true if savedTheme="true" and false if savedTheme="false"
+    });
 
     const [search, setSearch] = useState('');
     const [submitSearch, setSubmitSearch] = useState('');
@@ -21,14 +26,10 @@ function DashboardPage({role}){
     
     //theme handler
     useEffect(() => {
-        const root = document.documentElement;
-        if(theme){
-            root.classList.add("dark");
-        }else{
-            root.classList.remove("light");
-        }
-        localStorage.setItem("theme", theme);
-    }, [theme]);
+        const root = document.documentElement; //get the html elemnt of the webpage (to change the theme accross the whole system)
+        root.classList.toggle("dark", theme); //takes the classList element of the root (html) which has a class called dark. If the condition(theme) is true, add dark else remove dark 
+        localStorage.setItem("theme", theme); //save the current value of theme under the key "theme" as strings into the local storage
+    }, [theme]); //run the effect whenever the theme changes
 
     //debounce effect: delays submitSearch and resets page from 1 on input change
     useEffect(() => {
