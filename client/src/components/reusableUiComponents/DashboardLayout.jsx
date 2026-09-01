@@ -49,16 +49,16 @@ function DashboardLayout({role}){
 
             <SideBar userRole={role}/>
                 
-                <div className="flex flex-col w-screen h-screen p-4">
+                <div className="flex-1 flex flex-col min-w-0 p-4 md:p-6 gap-6">
                  
-                    <div className="flex flex-row gap-2 items-center justify-center sm:gap-4 pl-8">
+                    <div className="flex items-center justify-between w-full max-w-4xl mx-auto"> {/* try justfy center instead of between */}
                         <TextInput
                             type = "text" //input type
                             placeholder = {`Search ${getPageTitle().toLocaleLowerCase()}...`}
                             value = {search}
                             onChange = {(e) => { setSearch(e.target.value)}}
                             icon = {<ImSearch className="m-2.5 text-neutral-700"/>}
-                            className = 'bg-white sm:w-200! md:w-135!' 
+                            className = 'bg-white w-70! sm:w-150! lg:w-200!' 
                         />
                         <ThemeToggle
                             isDark={theme}
