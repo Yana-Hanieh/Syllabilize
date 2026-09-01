@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import TextInput from "./TextInput";
 import SideBar from "../generalComponents/SideBar";
-import TabButton from './TabButton';
 import ThemeToggle from "./ThemeToggle";
 import { ImSearch } from "react-icons/im";
 
@@ -40,7 +40,7 @@ function DashboardLayout({role}){
     const getPageTitle = () => {
         if (location.pathname.includes('/students')) return 'Students';
         if (location.pathname.includes('/courses')) return 'Courses';
-        if (location.pathname.includes('/classsrooms')) return 'Classsrooms';
+        if (location.pathname.includes('/classrooms')) return 'Classsrooms';
         return '';
     };
 
@@ -48,16 +48,13 @@ function DashboardLayout({role}){
         <div className="flex flex-row">
 
             <SideBar userRole={role}/>
-
-            <main className="flex-1 p-6 flex flex-row justify-between">   
                 
-                <div className="flex flex-col justify-between items-center w-full">
+                <div className="flex flex-col w-screen h-screen p-4">
                  
-                    
-                    <div className="flex flex-row gap-2 sm:gap-4 pl-8">
+                    <div className="flex flex-row gap-2 items-center justify-center sm:gap-4 pl-8">
                         <TextInput
-                            type = "type" //input type
-                            placeholder = "search..."
+                            type = "text" //input type
+                            placeholder = {`Search ${getPageTitle().toLocaleLowerCase()}...`}
                             value = {search}
                             onChange = {(e) => { setSearch(e.target.value)}}
                             icon = {<ImSearch className="m-2.5 text-neutral-700"/>}
@@ -68,14 +65,14 @@ function DashboardLayout({role}){
                             onToggle={() => setTheme(!theme)}
                         />
                     </div>
+                    <h1 className="text-2xl font-bold text-neutral-800 px-4">{getPageTitle()}</h1>
+                    
+                    {/* Using outlet to render child routers and pass state to them */}
+                    <Outlet context={{submitSearch,page,setPage}}/>
+
                 </div>
 
-                {/* React Router Child Component Render Location */}
-                {/* <div className="w-full">
-                    <Outlet context={{ submitSearch, page, setPage }} />
-                </div> */}
 
-            </main>
         </div>
     );
 }
