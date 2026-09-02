@@ -42,9 +42,12 @@ export class UserService {
         const offset = (page - 1) * limit;
         
         // FIX 1: Changed 'name' to 'userName' to match the database model schema
-        const whereCondition = name ? { 
-            userRole: 'student', //ensures that only student accounts are returned
-            userName: { [Op.like]: `%${name}%` } } : {};
+        const whereCondition =  { 
+            userRole: 'student', //ensures that only student accounts are returned (always required)
+            ...(name ? {userName: {[Op.like]: `%${name}%`}} : {}) //conditional search, unpack the value of the object (spread op) if a name query is provided (if the userName contains the same name)
+            // Spread operator (...): If 'name' exists, unpacks { userName: LIKE %name% } which returns a sequalize query object, and is stored into whereCondition.
+            // If 'name' is true, it returns the userName (sequelize object) and if false empty/undefined, spreads an empty object {} which adds no extra filters.
+        };
 
         const { count, rows } = await User.findAndCountAll({
             where: whereCondition,

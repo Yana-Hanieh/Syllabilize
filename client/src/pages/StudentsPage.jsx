@@ -39,6 +39,15 @@ function StudentsPage({role = 'admin'}) {
     fetchStudents();
   }, [page, submitSearch]);
 
+  const StudentsAttributes = [
+    {key: 'pfp', label:'ProfilePic', value: (item) => item.pfp},
+    {key: 'name', label:'Name', value: (item) => item.userName},
+    {key: 'id', label:'ID', value: (item) => item.studentId},
+    {key: 'email', label:'Email', value: (item) => item.userEmail},
+    {key: 'courses', label:'Courses', value: (item) => item.courses},
+    {key: 'classroom', label:'Classroom', value: (item) => item.classroom}
+  ]
+
   const filteredStudents = students.filter((student) => {
     if(!submitSearch)
       return true;
@@ -46,7 +55,7 @@ function StudentsPage({role = 'admin'}) {
     return(
       student.userName?.toLowerCase().includes(query) || 
       student.userEmail?.toLowerCase().includes(query) ||
-      student.studentId?.toLowerCase().includes(query)
+      student.studentId?.toString().includes(query)
     );
   })
 
@@ -102,6 +111,7 @@ function StudentsPage({role = 'admin'}) {
             items={filteredStudents}
             role={role}
             itemType='students'
+            attributes={StudentsAttributes}
             onDeleteItem={handleDelete}
             onEditItem={handleEdit}
           />

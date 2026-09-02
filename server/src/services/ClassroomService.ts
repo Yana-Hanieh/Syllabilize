@@ -22,7 +22,7 @@ export class ClassroomService{
             totalItems: count, 
             totalPages:Math.ceil(count / limit),
             currentPage: page, 
-            students: rows
+            classrooms: rows
         }
     }
 
