@@ -18,12 +18,12 @@ User.belongsToMany(Course,{
     otherKey:'courseId',
     sourceKey:'studentId', // use User.studentId's VALUE, not userId
 });
+
 Course.belongsToMany(User,{
     through:StudentCourses,
     foreignKey:'courseId',
     otherKey:'studentId',
     targetKey:'studentId', 
-
 });
 
 //these associations lst sequelize to automatically generate helper methods which internally handle syncing

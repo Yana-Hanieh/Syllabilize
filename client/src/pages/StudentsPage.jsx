@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import InfoCards from '../components/generalComponents/InfoCards'
 import InfoCardsContainer from '../components/generalComponents/InfoCardsContainer'
+import InfoTable from "../components/generalComponents/InfoTable";
 
 function StudentsPage({role = 'admin'}) {
   const { submitSearch, page, setPage } = useOutletContext() || {};
@@ -26,7 +27,7 @@ function StudentsPage({role = 'admin'}) {
           throw new Error('Failed to fetch students');
         }
 
-        const data = await res.json();
+        const data = await res.json();console.log(JSON.stringify(data.students[0], null, 2));
         setStudents(data.students);
         setTotalPages(data.totalPages);
       } catch (err) {
@@ -40,7 +41,7 @@ function StudentsPage({role = 'admin'}) {
   }, [page, submitSearch]);
 
   const StudentsAttributes = [
-    {key: 'pfp', label:'ProfilePic', value: (item) => item.pfp},
+    {key: 'pfp', label:'ProfilePic', value: (item) => item.profilePicUrl},
     {key: 'name', label:'Name', value: (item) => item.userName},
     {key: 'id', label:'ID', value: (item) => item.studentId},
     {key: 'email', label:'Email', value: (item) => item.userEmail},
@@ -107,7 +108,7 @@ function StudentsPage({role = 'admin'}) {
     <div>
       <div className='text-right p-4' >addition button here!!</div>
         <div className='flex justify-center'>
-          <InfoCardsContainer 
+          <InfoTable
             items={filteredStudents}
             role={role}
             itemType='students'

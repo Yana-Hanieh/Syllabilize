@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import InfoCards from '../components/generalComponents/InfoCards'
 import InfoCardsContainer from '../components/generalComponents/InfoCardsContainer'
+import InfoTable from "../components/generalComponents/InfoTable";
 
 function ClassroomPage({role = 'admin'}) {
   const { submitSearch, page, setPage } = useOutletContext() || {};
@@ -105,7 +106,7 @@ function ClassroomPage({role = 'admin'}) {
     <div>
       <div className='text-right p-4' >addition button here!!</div>
         <div className='flex justify-center'>
-          <InfoCardsContainer 
+          <InfoTable 
             items={filteredCourses}
             role={role}
             itemType='courses'

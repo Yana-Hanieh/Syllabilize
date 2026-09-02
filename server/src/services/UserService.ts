@@ -1,6 +1,8 @@
 import { User } from "../models/Users";
 import bcrypt from 'bcrypt';
 import { Op } from "sequelize";
+import { Classroom } from "../models/Classroom";
+import { Course } from "../models/Course";
 
 export class UserService {
 
@@ -53,6 +55,11 @@ export class UserService {
             where: whereCondition,
             limit: limit,
             offset: offset,
+            attributes: {exclude: ['userPassword']},
+            include: [
+                {model: Classroom, attributes:['classroomId', 'classroomName']},
+                {model: Course, attributes: ['courseId', 'courseName'], through: {attributes:[]}}
+            ],
         });
 
         return {

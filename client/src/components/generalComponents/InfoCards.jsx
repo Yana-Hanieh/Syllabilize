@@ -2,43 +2,25 @@ import React from 'react'
 import TabButton from '../reusableUiComponents/TabButton'
 import { MdDelete, MdEdit } from "react-icons/md";
 
-function InfoCards({pfp, name, email, id, courses, classroom, role='admin', onDelete, onEdit}) {
-    const formattedCourses = Array.isArray(courses) ? courses.join(', ') : courses;
-    const formattedClassroom = Array.isArray(classroom) ? classroom.join(', ') : classroom;
-    return (
-        <div className='border border-neutral-300 bg-neutral-100 dark:text-neutral-800 dark:shadow-neutral-100  rounded-xl shadow-sm hover:shadow-md transition-shadow flex flex-row gap-4 justify-between p-6 '>
+function InfoCards({pfp, fields = [], role = 'admin', onDelete, onEdit}) {
+  return (
+        <div className='border border-neutral-300 bg-neutral-100 dark:text-neutral-800 dark:shadow-neutral-100 rounded-xl shadow-sm hover:shadow-md transition-shadow flex flex-row gap-4 p-6 justify-between'>
             {/* card content area */}
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                <h3>
-                    {name}
-                </h3>
-
-                <h3>
-                    {id}
-                </h3>
-
-                {email &&(
-                    <h3>
-                        {email}
-                    </h3>
-                )}
-
-               {courses &&(
-                    <h3>
-                        {courses}
-                    </h3>
-                )}
-
-               {classroom &&(
-                    <h3>
-                        {classroom}
-                    </h3>
-                )}
+            <div className="flex-1 flex flex-col sm:grid sm:justify-items-center gap-2"
+                style={{ gridTemplateColumns: `repeat(${fields.length}, minmax(0,1fr))`}}>
+                    {fields.map(field => {
+                        const displayValue = Array.isArray(field.value) ? field.value.join(', ') : field.value;
+                        return (
+                            <h3 key={field.key} className='truncate w-full text-center'>
+                                {displayValue}
+                            </h3>
+                        )
+                    })}
             </div>
 
             {/*delete and modify buttons (for admin only) */}
             {role === 'admin' &&(
-                <div className="flex flex-row">
+                <div className="flex flex-row shrink-0 ml-2">
                   <TabButton 
                         onClick={onDelete}
                         title="Delete Item"
