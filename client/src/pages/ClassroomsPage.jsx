@@ -3,15 +3,15 @@ import { useOutletContext } from "react-router-dom";
 import InfoCards from '../components/generalComponents/InfoCards'
 import InfoCardsContainer from '../components/generalComponents/InfoCardsContainer'
 
-function StudentsPage({role = 'admin'}) {
+function ClassroomPage({role = 'admin'}) {
   const { submitSearch, page, setPage } = useOutletContext() || {};
-  const [classrooms, setStudents] = useState([]);
+  const [classrooms, setClassrooms] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchStudents = async () => {
+    const fetchClassrooms = async () => {
       setIsLoading(true);
       setError(null);
       try {
@@ -19,7 +19,7 @@ function StudentsPage({role = 'admin'}) {
         // once backend supports it: if (submitSearch) params.append('search', submitSearch);
 
         const res = await fetch(`http://localhost:3000/api/classrooms?${params}`, {
-          credentials: 'include',
+          credentials: 'include'
         });
 
         if (!res.ok) {
@@ -27,7 +27,9 @@ function StudentsPage({role = 'admin'}) {
         }
 
         const data = await res.json();
-        setStudents(data.classrooms);
+        console.log('classroomAPI response', data);
+        console.log('sample classroom:', data.classrooms?.[0]);
+        setClassrooms(data.classrooms ?? []);
         setTotalPages(data.totalPages);
       } catch (err) {
         setError(err.message);
@@ -36,24 +38,45 @@ function StudentsPage({role = 'admin'}) {
       }
     };
 
-    fetchStudents();
+    fetchClassrooms();
   }, [page, submitSearch]);
 
-  const filteredStudents = classrooms.filter((classroom) => {
+  const classroomsAttributes = [
+    {key:'name', label:'Name', value: (item) => item.classroomName},
+    {key:'id', label:'ID', value: (item) => item.classroomId}
+  ]
+
+  const filteredClassrooms = classrooms.filter((classroom) => {
     if(!submitSearch)
       return true;
     const query = submitSearch.toLowerCase();
     return(
       classroom.classroomName?.toLowerCase().includes(query) || 
-      classroom.classroomId?.includes(query)
+      classroom.classroomId?.toString().includes(query)
     );
   })
 
   const handleDelete = async (itemToDelete) => {
+    const targetId = itemToDelete.classroomId || itemToDelete.id //getting the classroom id of the info card
+    
+    if(!targetId){ //safety guard in case the passed item doesnt have an id 
+      console.error('Could not find a valid ID to delete on item:', itemToDelete);
+      return
+    }
+
     try{
-      await fetch(`http://localhost:3000/api/classrooms/${itemToDelete.id}`, {method: 'DELETE', credentials: 'include'});
-      setStudents((prev) => prev.filter((item) => item.id !== itemToDelete.id));
-    }catch(error){
+      const res = await fetch(`http://localhost:3000/api/classrooms/${targetId}`, {method: 'DELETE', credentials: 'include'});
+     
+      if(res.ok){ //checks if data was successfully fetched
+        setClassrooms((prev) => 
+          prev.filter((item) => {
+            const itemId= item.userId || item.classroomId || item.id;
+            return itemId !== targetId
+          })
+        );
+      }
+    }
+    catch(error){
        console.error('Failed to delete item:', error)
     }
    
@@ -82,9 +105,10 @@ function StudentsPage({role = 'admin'}) {
       <div className='text-right p-4' >addition button here!!</div>
         <div className='flex justify-center'>
           <InfoCardsContainer 
-            items={filteredStudents}
+            items={filteredClassrooms}
             role={role}
             itemType='classrooms'
+            attributes={classroomsAttributes}
             onDeleteItem={handleDelete}
             onEditItem={handleEdit}
           />
@@ -93,4 +117,4 @@ function StudentsPage({role = 'admin'}) {
   )
 }
 
-export default StudentsPage
+export default ClassroomPage
