@@ -3,8 +3,10 @@ import { useOutletContext } from "react-router-dom";
 import InfoCards from '../components/generalComponents/InfoCards'
 import InfoCardsContainer from '../components/generalComponents/InfoCardsContainer'
 import InfoTable from "../components/generalComponents/InfoTable";
+import TabButton from "../components/reusableUiComponents/TabButton";
+import { IoMdAddCircle } from "react-icons/io";
 
-function ClassroomPage({role = 'admin'}) {
+function CoursesPage({role}) {
   const { submitSearch, page, setPage } = useOutletContext() || {};
   const [courses, setCourses] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
@@ -59,7 +61,7 @@ function ClassroomPage({role = 'admin'}) {
   })
 
   const handleDelete = async (itemToDelete) => {
-    const targetId = itemToDelete.courseId || itemToDelete.id //getting the classroom id of the info card
+    const targetId = itemToDelete.courseId || itemToDelete.id //getting the course id of the info card
     
     if(!targetId){ //safety guard in case the passed item doesnt have an id 
       console.error('Could not find a valid ID to delete on item:', itemToDelete);
@@ -86,6 +88,10 @@ function ClassroomPage({role = 'admin'}) {
   const handleEdit = (itemToEdit) => {
     console.log("Open edit modal for:", itemToEdit);
   };
+
+  const handleAdd = (itemToAdd) => {
+    console.log('adding element',itemToAdd);
+  }
   
   if (isLoading) {
     return (
@@ -102,21 +108,35 @@ function ClassroomPage({role = 'admin'}) {
       </div>
     );
   }
+
   return (
     <div>
-      <div className='text-right p-4' >addition button here!!</div>
-        <div className='flex justify-center'>
-          <InfoTable 
-            items={filteredCourses}
-            role={role}
-            itemType='courses'
-            attributes={coursesAttributes}
-            onDeleteItem={handleDelete}
-            onEditItem={handleEdit}
-          />
-        </div>
+      <div className="">
+      {role==='admin'&& (
+          <div className="w-fit ring">
+            <TabButton 
+              type='button'
+              onClick={handleAdd}
+              variant="default"
+              icon={<IoMdAddCircle className="text-neutral-800 text-2xl"/>}
+              className=""
+            />
+          </div>
+        )}
+      </div>
+
+      <div className='flex justify-center'>
+        <InfoTable 
+          items={filteredCourses}
+          role={role}
+          itemType='courses'
+          attributes={coursesAttributes}
+          onDeleteItem={(handleDelete)}
+          onEditItem={handleEdit}
+        />
+      </div>
     </div>
   )
 }
 
-export default ClassroomPage
+export default CoursesPage

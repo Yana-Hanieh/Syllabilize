@@ -4,7 +4,7 @@ import InfoCards from '../components/generalComponents/InfoCards'
 import InfoCardsContainer from '../components/generalComponents/InfoCardsContainer'
 import InfoTable from "../components/generalComponents/InfoTable";
 
-function ClassroomPage({role = 'admin'}) {
+function ClassroomPage({role}) {
   const { submitSearch, page, setPage } = useOutletContext() || {};
   const [classrooms, setClassrooms] = useState([]);
   const [totalPages, setTotalPages] = useState(1);

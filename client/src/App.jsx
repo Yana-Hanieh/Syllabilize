@@ -21,17 +21,17 @@ function App() {
           <Route path='/admin' element={<DashboardLayout role='admin'/>}>
             {/* default admin path that redirets to students page */}
             <Route index element={<Navigate to ='students' replace/>} />
-            <Route path='students' element={<StudentsPage/>} />
-            <Route path='courses' element={<CoursesPage/>} />
-            <Route path='classrooms' element={<ClassroomsPage/>} />
+            <Route path='students' element={<StudentsPage role='admin'/>} />
+            <Route path='courses' element={<CoursesPage role='admin'/>} />
+            <Route path='classrooms' element={<ClassroomsPage role='admin'/>} />
           </Route>
 
           {/* student routers */}
           <Route path='/student' element={<DashboardLayout role='student'/>}>
             {/* default student path that redirects to students page */}
             <Route index element={<Navigate to ='courses' replace/>} />
-            <Route path='courses' element={<CoursesPage/>} />
-            <Route path='classrooms' element={<ClassroomsPage/>} />
+            <Route path='courses' element={<CoursesPage role='student'/>} />
+            <Route path='classrooms' element={<ClassroomsPage role='student'/>} />
           </Route>
 
           {/* fallback for unhandled routes */}
