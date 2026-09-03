@@ -59,7 +59,7 @@ function ClassroomPage({role = 'admin'}) {
   })
 
   const handleDelete = async (itemToDelete) => {
-    const targetId = itemToDelete.classroomId || itemToDelete.id //getting the classroom id of the info card
+    const targetId = itemToDelete.courseId || itemToDelete.id //getting the classroom id of the info card
     
     if(!targetId){ //safety guard in case the passed item doesnt have an id 
       console.error('Could not find a valid ID to delete on item:', itemToDelete);
