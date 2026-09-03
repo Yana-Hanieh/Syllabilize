@@ -64,16 +64,6 @@ function InfoTable({attributes=[],items=[],itemType='items', role='admin', onDel
                                             </td>
                                         )
                                     }
-                                    if(a.key === 'Course'){
-                                        const val = a?.value(item)
-                                        return(
-                                            <td className=' min-w-[30px]'>
-                                                {
-                                                    item?.Courses.courseName
-                                                }
-                                            </td>
-                                        )
-                                    }
 
                                     const display = Array.isArray(val) ? val.join(', ') : val; // if value is an array, join the items into a comma-separated string, otherwise use it as it is
                                     return <td key={ a.key} className="p-3 min-w-[150px]">{display}</td>; //render the formatted value inside a standard table data cell

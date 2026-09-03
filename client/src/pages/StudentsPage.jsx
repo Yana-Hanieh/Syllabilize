@@ -36,20 +36,44 @@ function StudentsPage({role = 'admin'}) {
       } finally {
         setIsLoading(false);
       }
+      console.log(JSON.stringify(data.students[0], null, 2));
+
     };
+    
 
     fetchStudents();
   }, [page, submitSearch]);
 
   const StudentsAttributes = [
-    {key: 'pfp', label:'ProfilePic', value: (item) => item.profilePicUrl},
-    {key: 'name', label:'Name', value: (item) => item.userName},
-    {key: 'id', label:'ID', value: (item) => item.studentId},
-    {key: 'email', label:'Email', value: (item) => item.userEmail},
-    {key: 'courses', label:'Courses', value: (item) => item.courses},
-    {key: 'classroom', label:'Classroom', value: (item) => item.classroom?.classroomName}
+    {
+      key: 'pfp', 
+      label:'ProfilePic', 
+      value: (item) => item.profilePicUrl
+    },
+    {
+      key: 'name', 
+      label:'Name', 
+      value: (item) => item.userName},
+    {
+      
+      key: 'id', 
+      label:'ID', 
+      value: (item) => item.studentId},
+    {
+      key: 'email', 
+      label:'Email', 
+      value: (item) => item.userEmail},
+    {
+      key: 'courses', 
+      label:'Courses', 
+      value: (item) => item.Courses?.map(course => course.courseName).join(', ') || 'No courses'},
+    {
+      key: 'classroom', 
+      label:'Classroom', 
+      value: (item) => item.classroom?.classroomName
+    }
   ]
-
+  
   const filteredStudents = students.filter((student) => {
     if(!submitSearch)
       return true;
