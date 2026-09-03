@@ -18,6 +18,9 @@ function DashboardLayout({role}){
     const [search, setSearch] = useState('');
     const [submitSearch, setSubmitSearch] = useState('');
     const [page, setPage] = useState(1);
+    const [userName, setUserName] = useState('')
+    const [profilePicUrl, setprofilePicUrl] = useState('')
+
 
     //theme handler
     useEffect(() => {
@@ -35,6 +38,22 @@ function DashboardLayout({role}){
 
         return () => clearTimeout(timer); //clears the timer if user keeps on typing
     }, [search]); //returns the search query 
+
+    useEffect(() => {
+        const fetchValues = async() => { //defines what the code will do, but doesnt run the function
+            try{
+                const res = await fetch(`http://localhost:3000/api/auth/me`, {credentials: 'include'}); //fetch the data from the /me function
+                const data = await res.json(); //transfer the data into a json file to extract it
+                setUserName(data.userName ?? ''); //extract the userName if available or keep it as an empty string
+                setprofilePicUrl(data.profilePicUrl ?? ''); //extract the profileURL if available or keep it as an empty string                
+            }
+            catch(error){
+                console.error(error)
+            }
+        }; 
+        
+        fetchValues() //calls the function to run the inner code
+    },[]);
     
     //Helper function to extract title dynamically
     const getPageTitle = () => {
@@ -47,7 +66,11 @@ function DashboardLayout({role}){
     return(
         <div className="flex flex-row">
 
-            <SideBar userRole={role}/>
+            <SideBar 
+                userRole={role}
+                userName={userName}
+                profilePicUrl={profilePicUrl}
+            />
                 
                 <div className="flex-1 flex flex-col min-w-0 p-4 md:p-6 gap-6">
                     {/* relative flex items-center justify-center w-full px-4 min-h-[44px] */}
