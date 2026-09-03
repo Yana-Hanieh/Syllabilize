@@ -15,6 +15,7 @@ function DashboardLayout({role}){
         return savedTheme === "true"; //if returns a boolean value instead of a string value: true if savedTheme="true" and false if savedTheme="false"
     });
 
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false)
     const [search, setSearch] = useState('');
     const [submitSearch, setSubmitSearch] = useState('');
     const [page, setPage] = useState(1);
@@ -64,45 +65,46 @@ function DashboardLayout({role}){
     };
 
     return(
-        <div className="flex flex-row">
+        <div className="flex flex-row w-screen">
 
             <SideBar 
+                setIsOpen={setIsSidebarOpen}
+                isOpen={isSidebarOpen}
                 userRole={role}
                 userName={userName}
                 profilePicUrl={profilePicUrl}
             />
+            <div className={`flex flex-col ${isSidebarOpen ? 'w-[90%]' : 'w-[80%]'} min-h-screen p-4 md:p-6 gap-6 h-fit ring-yellow-500`}>
+                {/* relative flex items-center justify-center w-full px-4 min-h-[44px] */}
                 
-                <div className="flex-1 flex flex-col min-w-0 p-4 md:p-6 gap-6">
-                    {/* relative flex items-center justify-center w-full px-4 min-h-[44px] */}
-                 
-                    <div className="relative flex items-center justify-center"> {/* try justfy center instead of between */}
-                        <div className="w-full max-w-2xl lg:max-w-3-xl">
-                            <TextInput
-                                type = "text" //input type
-                                placeholder = {`Search ${getPageTitle().toLocaleLowerCase()}...`}
-                                value = {search}
-                                onChange = {(e) => { setSearch(e.target.value)}}
-                                icon = {<ImSearch className="m-2.5 text-neutral-700"/>}
-                                className = 'bg-white' 
-                            />
-                        </div>
-
-                        <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                            <ThemeToggle
-                                isDark={theme}
-                                onToggle={() => setTheme(!theme)}
-                            />
-                        </div>
-                        
+                <div className="relative flex gap-5 items-center justify-between"> 
+                    <div/>
+                    <div className="w-full max-w-2xl lg:max-w-3-xl">
+                        <TextInput
+                            type = "text"
+                            placeholder = {`Search ${getPageTitle().toLocaleLowerCase()}...`}
+                            value = {search}
+                            onChange = {(e) => { setSearch(e.target.value)}}
+                            icon = {<ImSearch className="m-2.5 text-neutral-700"/>}
+                            className = 'bg-white' 
+                        />
                     </div>
-                    <h1 className="text-2xl font-bold text-neutral-800 px-4">{getPageTitle()}</h1>
-                    
-                    {/* Using outlet to render child routers and pass state to them */}
-                    <Outlet context={{submitSearch,page,setPage}}/>
 
+                    <div className=" ">
+                        <ThemeToggle
+                            isDark={theme}
+                            onToggle={() => setTheme(!theme)}
+                        />
+                    </div>
+                    
+                </div>
+                <h1 className="text-2xl font-bold text-neutral-800 px-4">{getPageTitle()}</h1>
+                {/* Using outlet to render child routers and pass state to them */}
+                <div className=" w-full">
+                    <Outlet context={{submitSearch,page,setPage}}/>
                 </div>
 
-
+            </div>
         </div>
     );
 }

@@ -11,7 +11,7 @@ function ClassroomPage({role = 'admin'}) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
+  useEffect(() => { //fetch paginated list of classrooms from the backend server
     const fetchClassrooms = async () => {
       setIsLoading(true);
       setError(null);
@@ -28,8 +28,6 @@ function ClassroomPage({role = 'admin'}) {
         }
 
         const data = await res.json();
-        console.log('classroomAPI response', data);
-        console.log('sample classroom:', data.classrooms?.[0]);
         setClassrooms(data.classrooms ?? []);
         setTotalPages(data.totalPages);
       } catch (err) {

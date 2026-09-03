@@ -27,7 +27,8 @@ function StudentsPage({role = 'admin'}) {
           throw new Error('Failed to fetch students');
         }
 
-        const data = await res.json();console.log(JSON.stringify(data.students[0], null, 2));
+        const data = await res.json();
+        console.log(JSON.stringify(data.students[0], null, 2));
         setStudents(data.students);
         setTotalPages(data.totalPages);
       } catch (err) {
@@ -46,7 +47,7 @@ function StudentsPage({role = 'admin'}) {
     {key: 'id', label:'ID', value: (item) => item.studentId},
     {key: 'email', label:'Email', value: (item) => item.userEmail},
     {key: 'courses', label:'Courses', value: (item) => item.courses},
-    {key: 'classroom', label:'Classroom', value: (item) => item.classroom}
+    {key: 'classroom', label:'Classroom', value: (item) => item.classroom?.classroomName}
   ]
 
   const filteredStudents = students.filter((student) => {
@@ -105,18 +106,18 @@ function StudentsPage({role = 'admin'}) {
     );
   }
   return (
-    <div>
+    <div className=" max-w-full overflow-hidden ">
       <div className='text-right p-4' >addition button here!!</div>
-        <div className='flex justify-center'>
-          <InfoTable
-            items={filteredStudents}
-            role={role}
-            itemType='students'
-            attributes={StudentsAttributes}
-            onDeleteItem={handleDelete}
-            onEditItem={handleEdit}
-          />
-        </div>
+      <div className='flex justify-center w-full'>
+        <InfoTable
+          items={filteredStudents}
+          role={role}
+          itemType='students'
+          attributes={StudentsAttributes}
+          onDeleteItem={handleDelete}
+          onEditItem={handleEdit}
+        />
+      </div>
     </div>
   )
 }

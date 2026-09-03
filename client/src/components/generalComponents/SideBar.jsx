@@ -8,11 +8,19 @@ import { PiStudentFill } from "react-icons/pi";
 import { SiGoogleclassroom } from "react-icons/si";
 import { FaBook } from "react-icons/fa";
 
-function SideBar({userRole = 'student', userName='John Doe', profilePicUrl=null}) {
+function SideBar(
+    {
+      userRole = 'student',
+      userName='John Doe',
+      profilePicUrl=null,
+      setIsOpen,
+      isOpen
+    }
+  ) {
   const navigate = useNavigate();
   const location = useLocation(); //gives access to the current url info 
   const isActive = (Path) => location.pathname.includes(Path); //returns true if the current url is the same as the buttons' path
-  const [isCollapsed, setIsCollapsed] = useState(false); 
+  // const [isOpen, setIsOpen] = useState(false); 
   const NavigationLinks = [
     {Label:"Students", Path:"/students", Icon:PiStudentFill, Role:['admin']},
     {Label:"Courses", Path:"/courses", Icon:SiGoogleclassroom, Role:['admin','student']},
@@ -22,28 +30,28 @@ function SideBar({userRole = 'student', userName='John Doe', profilePicUrl=null}
   const visibleLinks =NavigationLinks.filter(link => link.Role.includes(userRole))
 
   return (
-    <div>
+    <div className={` ${isOpen ? 'w-[10%]' : 'w-[20%]'} `}>
       {/* blurs the screen when the sidebar is open on small devices */}
-      {!isCollapsed && (
+      {!isOpen && (
         <div 
-          onClick={() => setIsCollapsed(true)}
+          onClick={() => setIsOpen(true)}
           className="fixed inset-0 bg-neutral-600/40 backdrop-blur-sm z-40 sm:hidden transition-opacity"
         />
       )}
 
       <div className={`bg-white dark:bg-neutral-200 shadow-sm z-50 rounded-r-xl absolute sm:relative flex flex-col transition-all duration-300 ease-in-out sm:pt-3
-              ${isCollapsed ? `w-16 sm:w-20 gap-5 sm:h-screen items-center pb-6 ` : `w-2/3 h-full sm:h-screen sm:w-65 gap-3`}`}
+              ${isOpen ? ` gap-5 sm:h-screen items-center pb-6 ` : ` h-full sm:h-screen gap-3`}`}
             >
               
           {/* Top section of the sidebar, contains pfp + users' name */}
           <div className="flex items-center justify-end h-10 sm:p-2">
               <IoMenu
-                onClick={() => setIsCollapsed(!isCollapsed)}
+                onClick={() => setIsOpen(!isOpen)}
                 className="text-3xl cursor-pointer text-neutral-600 hover:text-secondary" />
           </div> 
 
             {/* profile and user name is shown only when the bar is opened */}
-            {!isCollapsed &&(
+            {!isOpen &&(
                 <div className="flex flex-row gap-3 px-4 sm:px-6 items-center">
                     {profilePicUrl ? (
                       <img 
@@ -63,25 +71,25 @@ function SideBar({userRole = 'student', userName='John Doe', profilePicUrl=null}
             )}
 
           {/* elements of the sideBar */}
-          <div className="flex flex-col gap-4 px-4 cursor-pointer">
+          <div className="flex flex-col gap-4 px-4 w-full cursor-pointer">
             {visibleLinks.map(({Label,Path,Icon}) =>(
               <TabButton
                 key={Path}
                 icon={Icon}
-                label={isCollapsed ? '' : Label}
+                label={isOpen ? '' : Label}
                 isActive={isActive(Path)}
                 onClick={() => navigate(`/${userRole}${Path}`)}
-                className={`hover:bg-secondary ${isCollapsed ? 'justify-center': ''}`}
+                className={`hover:bg-secondary ${isOpen ? 'justify-center': ''}`}
                 />
             ))} 
           </div>
 
           {/* Logout button in the end of the sidebar */}
-          <div className={`mt-auto ${isCollapsed ? 'p-2' : 'p-4'}`}>
+          <div className={`mt-auto ${isOpen ? 'p-2' : 'p-4'}`}>
               <TabButton 
                 icon={FiLogOut}
                 variant='danger'
-                label={isCollapsed? '': 'LogOut'}
+                label={isOpen? '': 'LogOut'}
                 onClick={() => navigate('/login')}
               />
           </div>
