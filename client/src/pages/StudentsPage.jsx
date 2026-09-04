@@ -19,6 +19,8 @@ function StudentsPage({role = 'admin'}) {
   const [classroomOptions, setClassroomOptions] = useState([]);
   const [courseOptions, setCourseOptions] = useState([]);
 
+  const [popupMessageOpen, setPopupMessageOpen] = useState(false);
+
   // fetch the data from the backend
   useEffect(() => {
     const fetchStudents = async () => {
@@ -192,6 +194,7 @@ function StudentsPage({role = 'admin'}) {
   };
 
   const handleAdd = (itemToAdd) => {
+    setPopupMessageOpen(true);
     console.log('adding element',itemToAdd);
   };
   
@@ -234,6 +237,19 @@ function StudentsPage({role = 'admin'}) {
           onEditItem={handleEdit}
         />
       </div>
+
+      {popupMessageOpen && (
+      <div className="flex-1 justify-items-center">
+        <MessagePopup
+          attributes={StudentsDataEntryAttributes}
+          initialValues={null}
+          classroomOptions={classroomOptions}
+          coursesOptions={courseOptions}
+          onClose={() => setPopupMessageOpen(false)}
+          onSubmit={() => setPopupMessageOpen(false)}
+        />
+      </div>
+    )}
 
     </div>
   )
