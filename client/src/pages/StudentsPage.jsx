@@ -3,6 +3,9 @@ import { useOutletContext } from "react-router-dom";
 import InfoCards from '../components/generalComponents/InfoCards'
 import InfoCardsContainer from '../components/generalComponents/InfoCardsContainer'
 import InfoTable from "../components/generalComponents/InfoTable";
+import TabButton from "../components/reusableUiComponents/TabButton";
+import { IoMdAddCircle } from "react-icons/io";
+
 
 function StudentsPage({role = 'admin'}) {
   const { submitSearch, page, setPage } = useOutletContext() || {};
@@ -36,10 +39,7 @@ function StudentsPage({role = 'admin'}) {
       } finally {
         setIsLoading(false);
       }
-      console.log(JSON.stringify(data.students[0], null, 2));
-
     };
-    
 
     fetchStudents();
   }, [page, submitSearch]);
@@ -113,6 +113,10 @@ function StudentsPage({role = 'admin'}) {
   const handleEdit = (itemToEdit) => {
     console.log("Open edit modal for:", itemToEdit);
   };
+
+  const handleAdd = (itemToAdd) => {
+    console.log('adding element',itemToAdd);
+  };
   
   if (isLoading) {
     return (
@@ -130,8 +134,18 @@ function StudentsPage({role = 'admin'}) {
     );
   }
   return (
-    <div className=" max-w-full overflow-hidden ">
-      <div className='text-right p-4' >addition button here!!</div>
+    <div className="max-w-full overflow-hidden">
+      {role==='admin'&& (
+          <div className="w-fit ml-auto">
+            <TabButton 
+              type='button'
+              onClick={handleAdd}
+              variant="default"
+              icon={<IoMdAddCircle className="text-neutral-800 text-2xl"/>}
+            />
+          </div>
+      )} 
+
       <div className='flex justify-center w-full'>
         <InfoTable
           items={filteredStudents}
@@ -142,6 +156,7 @@ function StudentsPage({role = 'admin'}) {
           onEditItem={handleEdit}
         />
       </div>
+
     </div>
   )
 }

@@ -57,7 +57,7 @@ function InfoTable({attributes=[],items=[],itemType='items', role='admin', onDel
                                         const val = a?.value(item)
                                         // console.log('val', val)
                                         return (
-                                            <td className=' min-w-[30px] '>
+                                            <td key={a.key} className=' min-w-[30px] '>
                                                 {
                                                     item?.Classroom?.classroomName
                                                 }

@@ -110,20 +110,17 @@ function CoursesPage({role}) {
   }
 
   return (
-    <div>
-      <div className="">
+    <div className="max-w-full overflow-hidden">
       {role==='admin'&& (
-          <div className="w-fit ring">
+          <div className="w-fit ml-auto">
             <TabButton 
               type='button'
               onClick={handleAdd}
               variant="default"
               icon={<IoMdAddCircle className="text-neutral-800 text-2xl"/>}
-              className=""
             />
           </div>
         )}
-      </div>
 
       <div className='flex justify-center'>
         <InfoTable 
