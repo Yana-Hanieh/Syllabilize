@@ -43,7 +43,7 @@ function ClassroomPage({role}) {
     fetchClassrooms();
   }, [page, submitSearch]);
 
-  const classroomsAttributes = [
+  const StudentsDisplayAttributes = [
     {key:'name', label:'Name', value: (item) => item.classroomName},
     {key:'id', label:'ID', value: (item) => item.classroomId}
   ]
@@ -124,7 +124,7 @@ function ClassroomPage({role}) {
           items={filteredClassrooms}
           role={role}
           itemType='classrooms'
-          attributes={classroomsAttributes}
+          attributes={StudentsDisplayAttributes}
           onDeleteItem={handleDelete}
           onEditItem={handleEdit}
         />

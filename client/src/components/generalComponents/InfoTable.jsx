@@ -16,7 +16,7 @@ function InfoTable({attributes=[],items=[],itemType='items', role='admin', onDel
             <table className="border border-neutral-300 rounded-2xl w-full">
                 <thead className=' border-b-2 border-red-700'>
                     {/* tr: element that defines a table row*/}
-                    <tr className='bg-neutral-100 dark:bg-neutral-800'>
+                    <tr className='bg-neutral-100 dark:bg-neutral-900'>
                         {attributes.map(attribute => (
                             //th:element that defines a table header (the data inside the header)
                             <th key={attribute.key} className="p-3 text-left"> {attribute.label}</th> 
@@ -34,10 +34,11 @@ function InfoTable({attributes=[],items=[],itemType='items', role='admin', onDel
                         return(
                             //tr: element that defines a table row
                             <tr key={rowId} className="border-t border-neutral-200 dark:text-neutral-800"> 
-
-                                {/* checking pfp */}
+                                
                                 {attributes.map( a => { //map through the attribute array, and take 'a' as each attribute object (a is an object: {key: 'id', label:'ID', value: (item) => item.studentId})
                                     const val = a.value(item); //saves each object value in a val variable 
+                                    
+                                    {/* checking pfp */}
                                     if ( a.key === 'pfp') { //check if the key value of the 'a' object is a pfp 
                                         return (
                                             //td is the information displayed inside the table (table data)
@@ -66,7 +67,7 @@ function InfoTable({attributes=[],items=[],itemType='items', role='admin', onDel
                                     }
 
                                     const display = Array.isArray(val) ? val.join(', ') : val; // if value is an array, join the items into a comma-separated string, otherwise use it as it is
-                                    return <td key={ a.key} className="p-3 min-w-[150px]">{display}</td>; //render the formatted value inside a standard table data cell
+                            return <td key={ a.key} className="p-3 min-w-[150px]">{display}</td>; //render the formatted value inside a standard table data cell
                                 })}
 
                                 {/* Delete and Edit Action Buttons */}

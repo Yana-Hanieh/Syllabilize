@@ -4,24 +4,26 @@ import InfoCards from '../components/generalComponents/InfoCards'
 import InfoCardsContainer from '../components/generalComponents/InfoCardsContainer'
 import InfoTable from "../components/generalComponents/InfoTable";
 import TabButton from "../components/reusableUiComponents/TabButton";
+import MessagePopup from "../components/reusableUiComponents/MessagePopup";
 import { IoMdAddCircle } from "react-icons/io";
 
 
 function StudentsPage({role = 'admin'}) {
   const { submitSearch, page, setPage } = useOutletContext() || {};
   const [students, setStudents] = useState([]);
+
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [classroomOptions, setClassroomOptions] = useState([]);
+  const [courseOptions, setCourseOptions] = useState([]);
+
+  // fetch the data from the backend
   useEffect(() => {
     const fetchStudents = async () => {
-      setIsLoading(true);
-      setError(null);
       try {
         const params = new URLSearchParams({ page, limit: 15 });
-        // once backend supports it: if (submitSearch) params.append('search', submitSearch);
-
         const res = await fetch(`http://localhost:3000/api/users?${params}`, {
           credentials: 'include',
         });
@@ -44,7 +46,27 @@ function StudentsPage({role = 'admin'}) {
     fetchStudents();
   }, [page, submitSearch]);
 
-  const StudentsAttributes = [
+  // fetch the classroom and course options for the select fields
+  useEffect(() => {
+    const fetchOptions = async() => {
+      try{
+        const params = new URLSearchParams({ page, limit: 15 });
+        const [classroomRes, courseRes] = await Promise.all([
+          fetch(`http://localhost:3000/api/classrooms?${params}`, {credentials: 'include'}), 
+          fetch(`http://localhost:3000/api/courses?${params}`, {credentials: 'include'}),
+        ]);
+
+        const classroomData = await classroomRes.json();
+        const courseData = await courseRes.json();
+        setClassroomOptions(classroomData.classrooms ?? [])
+        setCourseOptions(courseData.courses ?? [])
+      } catch (err) {
+        console.error('Failed to fetch options:', err);
+      }
+    }; fetchOptions();
+  }, []);
+
+  const StudentsDisplayAttributes = [
     {
       key: 'pfp', 
       label:'ProfilePic', 
@@ -73,7 +95,64 @@ function StudentsPage({role = 'admin'}) {
       value: (item) => item.classroom?.classroomName
     }
   ]
+
+  const StudentsDataEntryAttributes = [
+    {
+      key: 'name', 
+      label:'Name',
+      type:'text', 
+      required: true,
+    },
+    {
+      key: 'age', 
+      label:'Age',
+      type:'number', 
+      required: true
+    },
+    {
+      key: 'email', 
+      label:'Email',
+      type: 'text', 
+    },
+    {
+      key: 'password', 
+      label:'Password',
+      type:'text',
+      required: true
+    },
+    {
+      key: 'courses', 
+      label:'Courses', 
+      type:'multiselect', //use select since it will be a drop-down menue to choose multiple courses from
+      required: false
+    },
+    {
+      key: 'classroom', 
+      label:'Classroom',
+      type:'select', //use select since it will be a drop-down menue to choose one classroom from
+      required: true
+    }
+  ]
+
+  const StudentSelfEditAttributes = [
+    {
+      key: 'pfp', 
+      label:'ProfilePic',
+      type: 'image'
+    },
+    {
+      key: 'password', 
+      label:'Password',
+      type:'text'
+    },
+    {
+      key: 'email', 
+      label:'Email',
+      type: 'text'
+    },
+  ]
   
+  //filtering student based on their name, email or std id for the search
   const filteredStudents = students.filter((student) => {
     if(!submitSearch)
       return true;
@@ -87,7 +166,6 @@ function StudentsPage({role = 'admin'}) {
 
   const handleDelete = async (itemToDelete) => {
     const targetId = itemToDelete.userId || itemToDelete.studentId || itemToDelete.id //getting the id of the info card regarless if it is a student, course or a classroom id
-    
     if(!targetId){ //safety guard in case the passed item doesnt have an id 
       console.error('Could not find a valid ID to delete on item:', itemToDelete);
       return
@@ -95,7 +173,6 @@ function StudentsPage({role = 'admin'}) {
 
     try{
       const res = await fetch(`http://localhost:3000/api/users/${targetId}`, {method: 'DELETE', credentials: 'include'});
-     
       if(res.ok){ //checks if data was successfully fetched
         setStudents((prev) => 
           prev.filter((item) => {
@@ -108,8 +185,8 @@ function StudentsPage({role = 'admin'}) {
     catch(error){
        console.error('Failed to delete item:', error)
     }
-   
   }
+
   const handleEdit = (itemToEdit) => {
     console.log("Open edit modal for:", itemToEdit);
   };
@@ -134,8 +211,9 @@ function StudentsPage({role = 'admin'}) {
     );
   }
   return (
-    <div className="max-w-full overflow-hidden">
-      {role==='admin'&& (
+    //overflow-hidden
+    <div className="max-w-full overflow-auto"> 
+      {role==='admin'&& ( 
           <div className="w-fit ml-auto">
             <TabButton 
               type='button'
@@ -151,7 +229,7 @@ function StudentsPage({role = 'admin'}) {
           items={filteredStudents}
           role={role}
           itemType='students'
-          attributes={StudentsAttributes}
+          attributes={StudentsDisplayAttributes}
           onDeleteItem={handleDelete}
           onEditItem={handleEdit}
         />

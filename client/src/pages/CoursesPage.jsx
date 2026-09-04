@@ -45,7 +45,7 @@ function CoursesPage({role}) {
     fetchCourses();
   }, [page, submitSearch]);
 
-  const coursesAttributes = [
+  const StudentsDisplayAttributes = [
     {key: 'name', label:'Name', value: (item) => item.courseName},
     {key: 'id', label:'ID', value: (item) => item.courseId}
   ]
@@ -127,7 +127,7 @@ function CoursesPage({role}) {
           items={filteredCourses}
           role={role}
           itemType='courses'
-          attributes={coursesAttributes}
+          attributes={StudentsDisplayAttributes}
           onDeleteItem={(handleDelete)}
           onEditItem={handleEdit}
         />
