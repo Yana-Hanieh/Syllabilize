@@ -9,7 +9,7 @@ import { IoMdAddCircle } from "react-icons/io";
 
 
 function StudentsPage({role = 'admin'}) {
-  const { submitSearch, page, setPage } = useOutletContext() || {};
+  const { submitSearch, page, setPage, isSidebarOpen } = useOutletContext() || {};
   const [students, setStudents] = useState([]);
 
   const [totalPages, setTotalPages] = useState(1);
@@ -239,7 +239,10 @@ function StudentsPage({role = 'admin'}) {
       </div>
 
       {popupMessageOpen && (
-      <div className="flex-1 justify-items-center">
+      <div className={`fixed z-40 right-0 top-0 bottom-0 flex items-center justify-center p-4 bg-black/50`}
+        style={{ width: isSidebarOpen ? '90%' : '80%' }} // Adjust the width based on the sidebar state 
+        >
+          
         <MessagePopup
           attributes={StudentsDataEntryAttributes}
           initialValues={null}

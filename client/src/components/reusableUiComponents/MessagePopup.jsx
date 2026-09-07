@@ -6,7 +6,7 @@ import { TiCancel } from "react-icons/ti";
 function MessagePopup({attributes, initialValues=Boolean, required, coursesOptions, classroomOptions, onClose, onSubmit, className=''}) {
   return (
     // 
-    <div className='bg-neutral-100 dark:bg-white rounded-xl p-4 w-3/4 grid grid-cols-2 gap-2'>
+    <div className='bg-neutral-100 dark:bg-white rounded-xl p-4 w-2/4 grid grid-cols-2 gap-2'>
         <TabButton 
             type='button'
             icon={<TiCancel className="text-red-500 text-2xl"/>}

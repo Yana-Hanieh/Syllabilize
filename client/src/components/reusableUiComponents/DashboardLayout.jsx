@@ -101,7 +101,7 @@ function DashboardLayout({role}){
                 <h1 className="text-2xl font-bold text-neutral-800 px-4">{getPageTitle()}</h1>
                 {/* Using outlet to render child routers and pass state to them */}
                 <div className=" w-full">
-                    <Outlet context={{submitSearch,page,setPage}}/>
+                    <Outlet context={{submitSearch,page,setPage, isSidebarOpen}}/>
                 </div>
 
             </div>
