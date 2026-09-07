@@ -81,7 +81,7 @@ User.init(
     
     classroomId:{
         type:DataTypes.INTEGER, 
-        allowNull:true, 
+        allowNull:false, 
     }
     }, 
     {

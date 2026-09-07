@@ -1,5 +1,5 @@
 import Select from 'react-select';
-function TextInput({type='text', placeholder, value, onChange, required=false, icon, classroomOptions=[], courseOptions=[], className=''}){
+function TextInput({type='text', placeholder, value, onChange, required, icon, classroomOptions=[], courseOptions=[], className=''}){
     let inputElement; 
 
     if(type === 'select'){
@@ -18,7 +18,7 @@ function TextInput({type='text', placeholder, value, onChange, required=false, i
                                     {option.classroomName}
                                 </option>
                             ))}
-                            
+            
                         </select>
 
     }else if(type === 'multiselect'){
@@ -30,6 +30,7 @@ function TextInput({type='text', placeholder, value, onChange, required=false, i
                             isMulti
                             name="courses"
                             options={courseSelectOptions}
+                            onChange={(selectedOptions) => onChange(selectedOptions ? selectedOptions.map(s => s.value) : [])}
                             className="basic-multi-select"
                             classNamePrefix="select"
                         />
@@ -47,7 +48,6 @@ function TextInput({type='text', placeholder, value, onChange, required=false, i
                     placeholder={placeholder}
                     value={value}
                     onChange={onChange}
-                    required={required}
                     className={`w-full rounded-full border border-neutral-300 py-2 text-sm outline-none focus:border-primary
                         ${icon ? 'pl-9 pr-4' : 'px-4'}
                         ${className}`}

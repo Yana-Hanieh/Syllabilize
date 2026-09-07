@@ -39,7 +39,7 @@ function MessagePopup({attributes, initialValues=[], coursesOptions, classroomOp
             />
             
         {/* form fields */}
-        <div className='p-4 grid grid-cols-2 gap-2'>
+        <div className={`p-4 grid gap-2 ${attributes.length ===1 ? 'grid-cols-1': 'grid-cols-2'} `}>
             {attributes.map((a) => {
                 const display =
                         <TextInput 

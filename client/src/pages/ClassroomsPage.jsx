@@ -4,15 +4,18 @@ import InfoCards from '../components/generalComponents/InfoCards'
 import InfoCardsContainer from '../components/generalComponents/InfoCardsContainer'
 import InfoTable from "../components/generalComponents/InfoTable";
 import TabButton from "../components/reusableUiComponents/TabButton";
+import MessagePopup from "../components/reusableUiComponents/MessagePopup";
 import { IoMdAddCircle } from "react-icons/io";
 
-
 function ClassroomPage({role}) {
-  const { submitSearch, page, setPage } = useOutletContext() || {};
+  const { submitSearch, page, setPage, isSidebarOpen } = useOutletContext() || {};
   const [classrooms, setClassrooms] = useState([]);
+
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const [popupMessageOpen, setPopupMessageOpen] = useState(false);
 
   useEffect(() => { //fetch paginated list of classrooms from the backend server
     const fetchClassrooms = async () => {
@@ -43,9 +46,17 @@ function ClassroomPage({role}) {
     fetchClassrooms();
   }, [page, submitSearch]);
 
-  const StudentsDisplayAttributes = [
-    {key:'name', label:'Name', value: (item) => item.classroomName},
-    {key:'id', label:'ID', value: (item) => item.classroomId}
+  const ClassroomAttributes = [
+    {
+      key:'name', 
+      label:'Name', 
+      value: (item) => item.classroomName
+    },
+    {
+      key:'id', 
+      label:'ID', 
+      value: (item) => item.classroomId
+    }
   ]
 
   const filteredClassrooms = classrooms.filter((classroom) => {
@@ -88,6 +99,7 @@ function ClassroomPage({role}) {
   };
 
   const handleAdd = (itemToAdd) => {
+    setPopupMessageOpen(true);
     console.log('adding element',itemToAdd);
   };
   
@@ -124,11 +136,24 @@ function ClassroomPage({role}) {
           items={filteredClassrooms}
           role={role}
           itemType='classrooms'
-          attributes={StudentsDisplayAttributes}
+          attributes={ClassroomAttributes}
           onDeleteItem={handleDelete}
           onEditItem={handleEdit}
         />
       </div>
+
+      {popupMessageOpen && (
+        <div className={`fixed z-40 right-0 top-0 bottom-0 flex items-center justify-center p-4 bg-black/50`}
+          style={{ width: isSidebarOpen ? '90%' : '80%' }} // Adjust the width based on the sidebar state 
+          >
+          <MessagePopup
+            attributes={ClassroomAttributes}
+            initialValues={null}
+            onClose={() => setPopupMessageOpen(false)}
+            onSubmit={() => setPopupMessageOpen(false)}
+          />
+        </div>
+      )}
 
     </div>
   )

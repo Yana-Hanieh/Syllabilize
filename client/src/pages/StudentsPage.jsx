@@ -22,29 +22,29 @@ function StudentsPage({role = 'admin'}) {
   const [popupMessageOpen, setPopupMessageOpen] = useState(false);
 
   // fetch the data from the backend
-  useEffect(() => {
-    const fetchStudents = async () => {
-      try {
-        const params = new URLSearchParams({ page, limit: 15 });
-        const res = await fetch(`http://localhost:3000/api/users?${params}`, {
-          credentials: 'include',
-        });
+  const fetchStudents = async () => {
+    try {
+      const params = new URLSearchParams({ page, limit: 15 });
+      const res = await fetch(`http://localhost:3000/api/users?${params}`, {
+        credentials: 'include',
+      });
 
-        if (!res.ok) {
-          throw new Error('Failed to fetch students');
-        }
-
-        const data = await res.json();
-        console.log(JSON.stringify(data.students[0], null, 2));
-        setStudents(data.students);
-        setTotalPages(data.totalPages);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setIsLoading(false);
+      if (!res.ok) {
+        throw new Error('Failed to fetch students');
       }
-    };
 
+      const data = await res.json();
+      console.log(JSON.stringify(data.students[0], null, 2));
+      setStudents(data.students);
+      setTotalPages(data.totalPages);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => { //useeffect used outside to fetch the added student directly into the table without having to refresh the page
     fetchStudents();
   }, [page, submitSearch]);
 
@@ -68,6 +68,7 @@ function StudentsPage({role = 'admin'}) {
     }; fetchOptions();
   }, []);
 
+  //used to display data in the student table
   const StudentsDisplayAttributes = [
     {
       key: 'pfp', 
@@ -98,44 +99,46 @@ function StudentsPage({role = 'admin'}) {
     }
   ]
 
+  //used to display data in the add student form
   const StudentsDataEntryAttributes = [
     {
-      key: 'name', 
+      key: 'userName', 
       label:'Name',
       type:'text', 
       required: true,
     },
     {
-      key: 'age', 
+      key: 'studentAge', 
       label:'Age',
       type:'number', 
       required: true
     },
     {
-      key: 'email', 
+      key: 'userEmail', 
       label:'Email',
       type: 'text', 
     },
     {
-      key: 'password', 
+      key: 'userPassword', 
       label:'Password',
       type:'text',
       required: true
     },
     {
-      key: 'courses', 
+      key: 'courseIds', 
       label:'Courses', 
       type:'multiselect', //use select since it will be a drop-down menue to choose multiple courses from
       required: false
     },
     {
-      key: 'classroom', 
+      key: 'classroomId', 
       label:'Classroom',
       type:'select', //use select since it will be a drop-down menue to choose one classroom from
       required: true
     }
   ]
 
+  //used to display data in the edit student form
   const StudentSelfEditAttributes = [
     {
       key: 'pfp', 
@@ -166,6 +169,7 @@ function StudentsPage({role = 'admin'}) {
     );
   })
 
+  //handles deleting a student
   const handleDelete = async (itemToDelete) => {
     const targetId = itemToDelete.userId || itemToDelete.studentId || itemToDelete.id //getting the id of the info card regarless if it is a student, course or a classroom id
     if(!targetId){ //safety guard in case the passed item doesnt have an id 
@@ -189,15 +193,48 @@ function StudentsPage({role = 'admin'}) {
     }
   }
 
+  //handles editing student info
   const handleEdit = (itemToEdit) => {
     console.log("Open edit modal for:", itemToEdit);
   };
-
-  const handleAdd = (itemToAdd) => {
+  
+  //handler that triggers the add student popup message
+  const handleAddButton = (itemToAdd) => {
     setPopupMessageOpen(true);
-    console.log('adding element',itemToAdd);
+    console.error("Open add modal for:", itemToAdd);
+  }
+
+  //handles adding the data for the student into the form
+  const handleAddStudent = async (itemToAdd) => {
+    try{
+      //data is formatted to ensure that the data type is compatible with the format used in the backend
+      const formattedData ={ 
+        ...itemToAdd,
+        studentAge: Number(itemToAdd.studentAge), // Ensure studentAge is an integer
+        classroomId: Number(itemToAdd.classroomId) || null, // Ensure classroomId is either a valid ID or null
+        courseIds: itemToAdd.courseIds || [], // Ensure courseIds is an array, even if not provided
+      }
+      const res= await fetch(`http://localhost:3000/api/users`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(formattedData)
+      });
+      
+      if(!res.ok){
+        throw new Error('Failed to add student');
+      }
+
+      const newStudent = await res.json();
+      console.log('Added new student:', newStudent);
+      setPopupMessageOpen(false);
+      fetchStudents(); // Refresh the student list after adding a new student
+    } catch(error){
+      console.error('Failed to add student:', error);
+    }
   };
   
+  // handles the loading display while the data is being fetched from the backend
   if (isLoading) {
     return (
       <div className="w-full border border-neutral-300 bg-white dark:bg-neutral-800 rounded-2xl p-10 text-center text-neutral-500">
@@ -206,6 +243,7 @@ function StudentsPage({role = 'admin'}) {
     );
   }
 
+  // handles the error display if there is an error fetching the data from the backend
   if (error) {
     return (
       <div className="w-full border border-red-300 bg-red-50 text-red-600 rounded-2xl p-6 text-center">
@@ -214,19 +252,20 @@ function StudentsPage({role = 'admin'}) {
     );
   }
   return (
-    //overflow-hidden
-    <div className="max-w-full overflow-auto"> 
-      {role==='admin'&& ( 
+    <div className="max-w-full overflow-hidden"> 
+      {role==='admin'&& ( //ensures that only the admin can see the add button, since students shouldnt be able to add other students
           <div className="w-fit ml-auto">
+            {/* add button available to admin only */}
             <TabButton 
               type='button'
-              onClick={handleAdd}
+              onClick={handleAddButton}
               variant="default"
               icon={<IoMdAddCircle className="text-neutral-800 text-2xl"/>}
             />
           </div>
       )} 
 
+      {/* information thats displayed in a table */}
       <div className='flex justify-center w-full'>
         <InfoTable
           items={filteredStudents}
@@ -238,21 +277,21 @@ function StudentsPage({role = 'admin'}) {
         />
       </div>
 
+      {/* message popup */}
       {popupMessageOpen && (
-      <div className={`fixed z-40 right-0 top-0 bottom-0 flex items-center justify-center p-4 bg-black/50`}
-        style={{ width: isSidebarOpen ? '90%' : '80%' }} // Adjust the width based on the sidebar state 
-        >
-          
-        <MessagePopup
-          attributes={StudentsDataEntryAttributes}
-          initialValues={null}
-          classroomOptions={classroomOptions}
-          coursesOptions={courseOptions}
-          onClose={() => setPopupMessageOpen(false)}
-          onSubmit={() => setPopupMessageOpen(false)}
-        />
-      </div>
-    )}
+        <div className={`fixed z-40 right-0 top-0 bottom-0 flex items-center justify-center p-4 bg-black/50`}
+          style={{ width: isSidebarOpen ? '90%' : '80%' }} // Adjust the width based on the sidebar state 
+          >
+          <MessagePopup
+            attributes={StudentsDataEntryAttributes}
+            initialValues={null}
+            classroomOptions={classroomOptions}
+            coursesOptions={courseOptions}
+            onClose={() => setPopupMessageOpen(false)}
+            onSubmit={handleAddStudent}
+          />
+        </div>
+      )}
 
     </div>
   )
