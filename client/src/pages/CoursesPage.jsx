@@ -50,7 +50,7 @@ function CoursesPage({role}) {
     fetchCourses();
   }, [page, submitSearch]);
 
-  //used to display data in the student table and in the add student form
+  //used to display data in the student table
   const CoursesDisplayAttributes = [
     {
       key: 'courseName',
@@ -62,6 +62,7 @@ function CoursesPage({role}) {
       value: (item) => item.courseId}
   ]
 
+ //used to display data in the add courses form 
   const CoursesDataEntryAttributes = [
     {
       key: 'courseName',
@@ -123,7 +124,7 @@ function CoursesPage({role}) {
      });
 
      if (!res.ok){
-      throw new Error('Failed to add student');
+      throw new Error('Failed to add course');
      }
 
      const newCourse = await res.json();
@@ -187,7 +188,6 @@ function CoursesPage({role}) {
             initialValues={null}
             onClose={() => setPopupMessageOpen(false)}
             onSubmit={handleAddCourses}
-            className=""
           />
         </div>
       )}

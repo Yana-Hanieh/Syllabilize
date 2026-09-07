@@ -116,12 +116,12 @@ function StudentsPage({role = 'admin'}) {
     {
       key: 'userEmail', 
       label:'Email',
-      type: 'text', 
+      type: 'email', 
     },
     {
       key: 'userPassword', 
       label:'Password',
-      type:'text',
+      type:'password',
       required: true
     },
     {
@@ -148,12 +148,12 @@ function StudentsPage({role = 'admin'}) {
     {
       key: 'password', 
       label:'Password',
-      type:'text'
+      type:'password'
     },
     {
       key: 'email', 
       label:'Email',
-      type: 'text'
+      type: 'email'
     },
   ]
   
