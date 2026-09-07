@@ -1,4 +1,4 @@
-function TabButton({label, icon:Icon, isActive, onClick, variant = 'default',disabled = false ,className = ''}){
+function TabButton({label, icon:Icon, isActive, onClick, variant = 'default',disabled = false, onSubmit ,className = ''}){
     const baseStyles = 'w-full flex items-center gap-2 text-left px-4 py-2.5 rounded-full font-medium transition-colors cursor-pointer dark:hover:text-white'; //this is the basic style of the tab buttons
  
     const activeStyles = variant === 'danger' ? 'bg-red-500': 'bg-primary text-white'; //style of the danger tab buttons (cancel, delete, no ect) when hovered over/chosen
@@ -9,6 +9,7 @@ function TabButton({label, icon:Icon, isActive, onClick, variant = 'default',dis
             type= 'button'
             onClick={onClick}
             disabled={disabled}
+            onSubmit={onSubmit}
             className={`${baseStyles} ${isActive ? activeStyles : inactiveStyles} ${className}`}
         >
             {/* checks if the icon is a function (<icon/>) or an icon variable/prop */}
