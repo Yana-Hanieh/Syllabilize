@@ -94,7 +94,7 @@ function CoursesPage({role}) {
       if(res.ok){ //checks if data was successfully fetched
         setCourses((prev) => 
           prev.filter((item) => {
-            const itemId= item.userId || item.classroomId || item.id;
+            const itemId= item.courseId || item.id;
             return itemId !== targetId
           })
         );

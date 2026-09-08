@@ -95,7 +95,7 @@ function ClassroomPage({role}) {
       if(res.ok){ //checks if data was successfully fetched
         setClassrooms((prev) => 
           prev.filter((item) => {
-            const itemId= item.userId || item.classroomId || item.id;
+            const itemId= item.classroomId || item.id;
             return itemId !== targetId
           })
         );
