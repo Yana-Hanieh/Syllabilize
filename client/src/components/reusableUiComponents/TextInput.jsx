@@ -29,6 +29,7 @@ function TextInput({type='text', placeholder, value, onChange, required, icon, c
         inputElement =  <Select
                             isMulti
                             name="courses"
+                            placeholder={'select courses'}
                             options={courseSelectOptions}
                             onChange={(selectedOptions) => onChange(selectedOptions ? selectedOptions.map(s => s.value) : [])}
                             className="basic-multi-select"

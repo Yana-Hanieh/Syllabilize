@@ -16,12 +16,12 @@ function InfoTable({attributes=[],items=[],itemType='items', role='admin', onDel
             <table className="border border-neutral-300 rounded-2xl w-full">
                 <thead className=' border-b-2 border-red-700'>
                     {/* tr: element that defines a table row*/}
-                    <tr className='bg-neutral-100 dark:bg-neutral-900'>
+                    <tr className='bg-primary text-white '>
                         {attributes.map(attribute => (
                             //th:element that defines a table header (the data inside the header)
-                            <th key={attribute.key} className="p-3 text-left"> {attribute.label}</th> 
+                            <th key={attribute.key} className="p-3 text-left "> {attribute.label}</th> 
                         ))}
-                        {role === 'admin' && <th className="p-3"> Actions</th> }
+                        {role === 'admin' && <th className="p-3 text-center"> Actions</th> }
                     </tr>
                 </thead>
 
@@ -44,9 +44,11 @@ function InfoTable({attributes=[],items=[],itemType='items', role='admin', onDel
                                             //td is the information displayed inside the table (table data)
                                             <td key={a.key} className="p-3"> 
                                                 {val ? ( //if a valid image url exists, render it
-                                                    <img src={val} 
-                                                    alt="profile" 
-                                                    className="w-10 h-10 rounded-full object-cover" />
+                                                    <img 
+                                                        src={val} 
+                                                        alt="profile" 
+                                                        className="w-10 h-10 rounded-full object-cover" 
+                                                    />
                                                 ) : ( //if no valid url available, display a default profile icon
                                                     <CgProfile className="w-10 h-10 rounded-full text-neutral-500" />
                                                 )}
@@ -67,27 +69,30 @@ function InfoTable({attributes=[],items=[],itemType='items', role='admin', onDel
                                     }
 
                                     const display = Array.isArray(val) ? val.join(', ') : val; // if value is an array, join the items into a comma-separated string, otherwise use it as it is
-                            return <td key={ a.key} className="p-3 min-w-[150px]">{display}</td>; //render the formatted value inside a standard table data cell
+                                    return <td key={ a.key} className="p-3 min-w-[150px]">{display}</td>; //render the formatted value inside a standard table data cell
                                 })}
 
                                 {/* Delete and Edit Action Buttons */}
                                 {role === 'admin' && ( //if the user's role is an admin, he can access the action buttons 
-                                    <td className="p-3 flex gap-2">
-                                        <TabButton 
-                                            onClick={() => onDeleteItem(item)}
-                                            title="Delete Item"
-                                            variant='danger'
-                                            className='px-2 hover:bg-white dark:hover:bg-neutral-200'
-                                            icon={<MdDelete className='text-lg'/>}
-                                        />
+                                    <td className="p-3 text-center">
+                                        <div className="flex items-center justify-center gap-1">
+                                            <TabButton 
+                                                onClick={() => onDeleteItem(item)}
+                                                title="Delete Item"
+                                                variant='danger'
+                                                className='px-2! w-fit! hover:bg-white dark:hover:bg-neutral-200'
+                                                icon={<MdDelete className='text-lg'/>}
+                                            />
 
-                                        <TabButton 
-                                            onClick={() => onEditItem(item)}
-                                            title="Edit Item"
-                                            className='px-2!'
-                                            icon={<MdEdit className='text-lg'/>}
-                                        />
-                                    </td>
+                                            <TabButton 
+                                                onClick={() => onEditItem(item)}
+                                                title="Edit Item"
+                                                className='px-2! w-fit!'
+                                                icon={<MdEdit className='text-lg'/>}
+                                            />
+                                        </div>
+                                     </td>
+                                   
                                 )}
                             </tr>
                         )
