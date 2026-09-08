@@ -5,17 +5,20 @@ import InfoCardsContainer from '../components/generalComponents/InfoCardsContain
 import InfoTable from "../components/generalComponents/InfoTable";
 import TabButton from "../components/reusableUiComponents/TabButton";
 import MessagePopup from "../components/reusableUiComponents/MessagePopup";
+import ConfirmationMessage from "../components/reusableUiComponents/ConfirmationMessage";
 import { IoMdAddCircle } from "react-icons/io";
 
 function ClassroomPage({role}) {
   const { submitSearch, page, setPage, isSidebarOpen } = useOutletContext() || {};
   const [classrooms, setClassrooms] = useState([]);
+  const [itemToDelete, setItemToDelete] = useState(null);
 
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const [popupMessageOpen, setPopupMessageOpen] = useState(false);
+  const [confirmationMessgeOpen, setConfirmationMessgeOpen] = useState(false)
 
  //fetch paginated list of classrooms from the backend server
   const fetchClassrooms = async () => {
@@ -70,7 +73,6 @@ function ClassroomPage({role}) {
     }
   ]
 
-
   const filteredClassrooms = classrooms.filter((classroom) => {
     if(!submitSearch)
       return true;
@@ -81,7 +83,15 @@ function ClassroomPage({role}) {
     );
   })
 
-  const handleDelete = async (itemToDelete) => {
+   //handler that triggers the delete student 
+  const handleDeleteButton = (item) => {
+    setItemToDelete(item); 
+    setConfirmationMessgeOpen(true);  
+    console.log("Triggering delete handler")
+  }
+
+  //handles deleting a student
+  const handleDeleteClassroom  = async (itemToDelete) => {
     const targetId = itemToDelete.classroomId || itemToDelete.id //getting the classroom id of the info card
     
     if(!targetId){ //safety guard in case the passed item doesnt have an id 
@@ -174,7 +184,7 @@ function ClassroomPage({role}) {
           role={role}
           itemType='classrooms'
           attributes={ClassroomDisplayAttributes}
-          onDeleteItem={handleDelete}
+          onDeleteItem={handleDeleteButton}
           onEditItem={handleEdit}
         />
       </div>
@@ -193,8 +203,25 @@ function ClassroomPage({role}) {
         </div>
       )}
 
+      {/* confimration message of delete popup */}
+      {confirmationMessgeOpen && ( 
+        <div className={`fixed z-40 right-0 top-0 bottom-0 flex items-center justify-center p-4 bg-black/50`}
+            style={{ width: isSidebarOpen ? '90%' : '80%' }} // Adjust the width based on the sidebar state 
+            >
+          <ConfirmationMessage
+            onSubmit={() => {
+              handleDeleteClassroom(itemToDelete); 
+              setConfirmationMessgeOpen(false);
+            } }
+            onClose={() => setConfirmationMessgeOpen(false)}
+           itemToDelete={itemToDelete}
+          />
+        </div>
+      )}
+
     </div>
   )
 }
+
 
 export default ClassroomPage
