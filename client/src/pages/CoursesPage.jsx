@@ -58,11 +58,14 @@ function CoursesPage({role}) {
     {
       key: 'courseName',
       label:'Name',
-      value: (item) => item.courseName},
+      value: (item) => item.courseName,
+      contexts: ['add', 'adminEdit'] 
+    },
     {
       key: 'courseId',
       label:'ID',
-      value: (item) => item.courseId}
+      value: (item) => item.courseId,
+    }
   ]
 
  //used to display data in the add courses form 
@@ -114,8 +117,8 @@ function CoursesPage({role}) {
     catch(error){
        console.error('Failed to delete item:', error)
     }
-   
   }
+
   const handleEdit = (itemToEdit) => {
     console.log("Open edit modal for:", itemToEdit);
   };

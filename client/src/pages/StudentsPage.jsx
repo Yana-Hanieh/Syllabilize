@@ -27,6 +27,8 @@ function StudentsPage({role = 'admin'}) {
 
   // fetch the data from the backend
   const fetchStudents = async () => {
+    setIsLoading(true);
+    setError(null);
     try {
       const params = new URLSearchParams({ page, limit: 15 });
       const res = await fetch(`http://localhost:3000/api/users?${params}`, {
@@ -77,33 +79,43 @@ function StudentsPage({role = 'admin'}) {
     {
       key: 'pfp', 
       label:'ProfilePic', 
-      value: (item) => item.profilePicUrl
+      value: (item) => item.profilePicUrl,
+      contexts: ['selfEdit'] 
     },
     {
-      key: 'name', 
+      key: 'userName', 
       label:'Name', 
-      value: (item) => item.userName},
+      value: (item) => item.userName,
+      contexts: ['add'] 
+    },
     {
       
-      key: 'id', 
+      key: 'studentId', 
       label:'ID', 
-      value: (item) => item.studentId},
+      value: (item) => item.studentId,
+    },
     {
-      key: 'email', 
+      key: 'userEmail', 
       label:'Email', 
-      value: (item) => item.userEmail},
+      value: (item) => item.userEmail,
+      contexts: ['add','selfEdit','adminEdit'] 
+
+    },
     {
-      key: 'courses', 
+      key: 'courseIds', 
       label:'Courses', 
-      value: (item) => item.Courses?.map(course => course.courseName).join(', ') || 'No courses'},
+      value: (item) => item.Courses?.map(course => course.courseName).join(', ') || 'No courses',
+      contexts: ['add','adminEdit'] 
+    },
     {
       key: 'classroom', 
       label:'Classroom', 
-      value: (item) => item.classroom?.classroomName
+      value: (item) => item.classroom?.classroomName,
+      contexts: ['add','selfEdit'] 
     }
   ]
   
-  const StudentFieldAttributes = [
+  const StudentAttributes = [
     { key: 'userName', label: 'Name', type: 'text', required: true, contexts: ['add'] },
     { key: 'studentAge', label: 'Age', type: 'number', required: true, contexts: ['add'] },
     { key: 'userEmail', label: 'Email', type: 'email', required: true, contexts: ['add', 'adminEdit', 'selfEdit'] },
@@ -278,7 +290,7 @@ function StudentsPage({role = 'admin'}) {
           style={{ width: isSidebarOpen ? '90%' : '80%' }} // Adjust the width based on the sidebar state 
           >
           <MessagePopup
-            attributes={StudentFieldAttributes.filter(f => f.contexts.includes( itemToEdit? 'adminEdit':'add'))}
+            attributes={StudentAttributes.filter(f => f.contexts.includes( itemToEdit? 'adminEdit':'add'))}
             initialValues={itemToEdit}
             classroomOptions={classroomOptions}
             coursesOptions={courseOptions}
