@@ -116,7 +116,7 @@ function ClassroomPage({role}) {
     }
    
   }
-  const handleEdit = (itemToEdit) => {
+  const handleEditButton = (itemToEdit) => {
     console.log("Open edit modal for:", itemToEdit);
   };
 
@@ -185,7 +185,7 @@ function ClassroomPage({role}) {
           itemType='classrooms'
           attributes={ClassroomDisplayAttributes}
           onDeleteItem={handleDeleteButton}
-          onEditItem={handleEdit}
+          onEditItem={handleEditButton}
         />
       </div>
 

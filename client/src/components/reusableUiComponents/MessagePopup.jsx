@@ -3,8 +3,11 @@ import TextInput from './TextInput'
 import TabButton from './TabButton';
 import { TiCancel } from "react-icons/ti";
 
-function MessagePopup({attributes, initialValues=[], coursesOptions, classroomOptions, onClose, onSubmit, className=''}) {
-    
+function MessagePopup({attributes, initialValues=[], classType, coursesOptions, classroomOptions, onClose, onSubmit, className=''}) {
+     const displayName = typeof initialValues === 'object' && initialValues !== null 
+        ? initialValues.userName || initialValues.courseName || initialValues.classroomName || 'this item'
+        : initialValues || 'this item';
+
     const [formValues, setFormValues] = React.useState(initialValues || {});
 
     // update the state whenever the initialValues prop changes
@@ -17,8 +20,7 @@ function MessagePopup({attributes, initialValues=[], coursesOptions, classroomOp
 
     const handleSubmit = (e) => { 
         e.preventDefault(); //prevents the page from auto refreshing when the submit button is clicked
-        setFormValues(formValues);
-        onSubmit(formValues);
+        onSubmit({ ...(initialValues || {}), ...formValues });
     }
 
     //handles the change in format values when the user inputs data into the form fields
@@ -37,7 +39,11 @@ function MessagePopup({attributes, initialValues=[], coursesOptions, classroomOp
                 variant="danger"
                 className='w-fit! p-1! ml-auto'
             />
-            
+
+        <h1 className='pt-2 '>
+            {initialValues? `Editing ${displayName}` : `Adding a new ${classType}`}
+        </h1>   
+
         {/* form fields */}
         <div className={`p-4 grid gap-2 ${attributes.length ===1 ? 'grid-cols-1': 'grid-cols-2'} `}>
             {attributes.map((a) => {

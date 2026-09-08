@@ -13,6 +13,7 @@ function StudentsPage({role = 'admin'}) {
   const { submitSearch, page, setPage, isSidebarOpen } = useOutletContext() || {};
   const [students, setStudents] = useState([]);
   const [itemToDelete, setItemToDelete] = useState(null);
+  const [itemToEdit, setItemToEdit] = useState(null);
 
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
@@ -101,65 +102,17 @@ function StudentsPage({role = 'admin'}) {
       value: (item) => item.classroom?.classroomName
     }
   ]
-
-  //used to display data in the add student form
-  const StudentsDataEntryAttributes = [
-    {
-      key: 'userName', 
-      label:'Name',
-      type:'text', 
-      required: true,
-    },
-    {
-      key: 'studentAge', 
-      label:'Age',
-      type:'number', 
-      required: true
-    },
-    {
-      key: 'userEmail', 
-      label:'Email',
-      type: 'email', 
-    },
-    {
-      key: 'userPassword', 
-      label:'Password',
-      type:'password',
-      required: true
-    },
-    {
-      key: 'courseIds', 
-      label:'Courses', 
-      type:'multiselect', //use select since it will be a drop-down menue to choose multiple courses from
-      required: false
-    },
-    {
-      key: 'classroomId', 
-      label:'Classroom',
-      type:'select', //use select since it will be a drop-down menue to choose one classroom from
-      required: true
-    }
-  ]
-
-  //used to display data in the edit student form
-  const StudentSelfEditAttributes = [
-    {
-      key: 'pfp', 
-      label:'ProfilePic',
-      type: 'image'
-    },
-    {
-      key: 'password', 
-      label:'Password',
-      type:'password'
-    },
-    {
-      key: 'email', 
-      label:'Email',
-      type: 'email'
-    },
-  ]
   
+  const StudentFieldAttributes = [
+    { key: 'userName', label: 'Name', type: 'text', required: true, contexts: ['add'] },
+    { key: 'studentAge', label: 'Age', type: 'number', required: true, contexts: ['add'] },
+    { key: 'userEmail', label: 'Email', type: 'email', required: true, contexts: ['add', 'adminEdit', 'selfEdit'] },
+    { key: 'userPassword', label: 'Password', type: 'password', required: true, contexts: ['add', 'selfEdit'] },
+    { key: 'courseIds', label: 'Courses', type: 'multiselect', contexts: ['add', 'adminEdit'] },
+    { key: 'classroomId', label: 'Classroom', type: 'select', required: true, contexts: ['add', 'adminEdit'] },
+    { key: 'pfp', label: 'ProfilePic', type: 'image', contexts: ['selfEdit'] },
+]
+
   //filtering student based on their name, email or std id for the search
   const filteredStudents = students.filter((student) => {
     if(!submitSearch)
@@ -205,13 +158,43 @@ function StudentsPage({role = 'admin'}) {
   }
 
   //handles editing student info
-  const handleEdit = (itemToEdit) => {
-    console.log("Open edit modal for:", itemToEdit);
+  const handleEditButton = (item) => {
+    setItemToEdit(item);
+    setPopupMessageOpen(true);
+    console.log("triggers edit modal handler for:", itemToEdit);
   };
+
+  const handleEditStudent = async (itemToEdit) => {
+      const formattedData ={ 
+        ...itemToEdit,
+        userId: itemToEdit.userId || itemToEdit.studentId || itemToEdit.id,
+        studentAge: Number(itemToEdit.studentAge), // Ensure studentAge is an integer
+        classroomId: Number(itemToEdit.classroomId) || null, // Ensure classroomId is either a valid ID or null
+        courseIds: itemToEdit.courseIds || itemToEdit.Courses?.map((course) => course.courseId) || [],
+      }
+    try{
+      const res = await fetch(`http://localhost:3000/api/users/${formattedData.userId}`, {
+        method: 'PUT',
+        credentials: 'include', 
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(formattedData)
+      });
+
+      if(!res.ok){
+        throw new Error('Failed to edit student');
+      }
+
+      setPopupMessageOpen(false);
+      fetchStudents();
+    } catch(error){
+      console.error('Failed to edit student:', error);
+    }
+  }
   
   //handler that triggers the add student popup message
   const handleAddButton = (itemToAdd) => {
     setPopupMessageOpen(true);
+    setItemToEdit(null)
     console.error("triggers add modal handler for:", itemToAdd);
   }
 
@@ -285,7 +268,7 @@ function StudentsPage({role = 'admin'}) {
           itemType='students'
           attributes={StudentsDisplayAttributes}
           onDeleteItem={handleDeleteButton}
-          onEditItem={handleEdit}
+          onEditItem={handleEditButton}
         />
       </div>
 
@@ -295,12 +278,13 @@ function StudentsPage({role = 'admin'}) {
           style={{ width: isSidebarOpen ? '90%' : '80%' }} // Adjust the width based on the sidebar state 
           >
           <MessagePopup
-            attributes={StudentsDataEntryAttributes}
-            initialValues={null}
+            attributes={StudentFieldAttributes.filter(f => f.contexts.includes( itemToEdit? 'adminEdit':'add'))}
+            initialValues={itemToEdit}
             classroomOptions={classroomOptions}
             coursesOptions={courseOptions}
             onClose={() => setPopupMessageOpen(false)}
-            onSubmit={handleAddStudent}
+            onSubmit={itemToEdit ? handleEditStudent : handleAddStudent}
+            classType={'Student'}
           />
         </div>
       )}

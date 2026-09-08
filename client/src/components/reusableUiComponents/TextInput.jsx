@@ -26,11 +26,13 @@ function TextInput({type='text', placeholder, value, onChange, required, icon, c
                                         value: c.courseId,
                                         label: c.courseName
                                     }));
+        const selectedCourseOptions = courseSelectOptions.filter(option => value?.includes(option.value));
         inputElement =  <Select
                             isMulti
                             name="courses"
                             placeholder={'select courses'}
                             options={courseSelectOptions}
+                            value={selectedCourseOptions}
                             onChange={(selectedOptions) => onChange(selectedOptions ? selectedOptions.map(s => s.value) : [])}
                             className="basic-multi-select"
                             classNamePrefix="select"

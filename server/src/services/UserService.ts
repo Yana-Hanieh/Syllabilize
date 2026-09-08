@@ -50,7 +50,7 @@ export class UserService {
             // Spread operator (...): If 'name' exists, unpacks { userName: LIKE %name% } which returns a sequalize query object, and is stored into whereCondition.
             // If 'name' is true, it returns the userName (sequelize object) and if false empty/undefined, spreads an empty object {} which adds no extra filters.
         };
-
+ 
         const { count, rows } = await User.findAndCountAll({
             where: whereCondition,
             limit: limit,
@@ -74,15 +74,24 @@ export class UserService {
         return await User.findByPk(id);
     }
 
-    async update(userId: string, newName: string, newAge: number, newClassroomId: number): Promise<User | null> {
+    async update(
+        userId: string,
+        newEmail: string,
+        newClassroomId: number,
+        courseIds?: number[],
+    ): Promise<User | null> {
         const foundUser = await User.findByPk(userId);
         if (!foundUser) return null;
 
-        if (newName) foundUser.userName = newName;
-        if (newAge !== undefined) foundUser.studentAge = newAge;
+        if (newEmail) foundUser.userEmail = newEmail;
         if (newClassroomId !== undefined) foundUser.classroomId = newClassroomId;
 
         await foundUser.save();
+
+        if (Array.isArray(courseIds)) {
+            await (foundUser as any).setCourses(courseIds);
+        }
+
         return foundUser;
     }
 

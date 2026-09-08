@@ -36,8 +36,13 @@ export class UserController{
         if (requester. userRole !== 'admin' && requester.userId !== targetId){
             return res.status(403).json({message:'You can only update your own profile'})
         }
-        const {userName,studentAge,classroomId} = req.body;
-        const result = await userService.update(targetId,userName,studentAge,classroomId);
+        const {userEmail, classroomId, courseIds} = req.body;
+        const result = await userService.update(
+            targetId,
+            userEmail,
+            classroomId,
+            courseIds,
+        );
          if(!result){
             return res.status(404).json({message:'Student not found'})
         }
