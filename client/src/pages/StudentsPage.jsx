@@ -6,11 +6,13 @@ import InfoTable from "../components/generalComponents/InfoTable";
 import TabButton from "../components/reusableUiComponents/TabButton";
 import MessagePopup from "../components/reusableUiComponents/MessagePopup";
 import { IoMdAddCircle } from "react-icons/io";
+import ConfirmationMessage from "../components/reusableUiComponents/ConfirmationMessage";
 
 
 function StudentsPage({role = 'admin'}) {
   const { submitSearch, page, setPage, isSidebarOpen } = useOutletContext() || {};
   const [students, setStudents] = useState([]);
+  const [itemToDelete, setItemToDelete] = useState(null);
 
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
@@ -20,6 +22,7 @@ function StudentsPage({role = 'admin'}) {
   const [courseOptions, setCourseOptions] = useState([]);
 
   const [popupMessageOpen, setPopupMessageOpen] = useState(false);
+  const [confirmationMessgeOpen, setConfirmationMessgeOpen] = useState(false)
 
   // fetch the data from the backend
   const fetchStudents = async () => {
@@ -169,13 +172,23 @@ function StudentsPage({role = 'admin'}) {
     );
   })
 
+  //handler that triggers the delete student 
+  const handleDeleteButton = (item) => {
+    setItemToDelete(item);
+    setConfirmationMessgeOpen(true);
+    console.log("Triggering delete handler")
+  }
+  
   //handles deleting a student
-  const handleDelete = async (itemToDelete) => {
+  const handleDeleteStudent = async (itemToDelete) => {
+    console.log('before targetId')
     const targetId = itemToDelete.userId || itemToDelete.studentId || itemToDelete.id //getting the id of the info card regarless if it is a student, course or a classroom id
+    console.log("after targetId")
     if(!targetId){ //safety guard in case the passed item doesnt have an id 
       console.error('Could not find a valid ID to delete on item:', itemToDelete);
       return
     }
+    console.log("after targetid check")
 
     try{
       const res = await fetch(`http://localhost:3000/api/users/${targetId}`, {method: 'DELETE', credentials: 'include'});
@@ -251,6 +264,7 @@ function StudentsPage({role = 'admin'}) {
       </div>
     );
   }
+
   return (
     <div className="max-w-full overflow-hidden"> 
       {role==='admin'&& ( //ensures that only the admin can see the add button, since students shouldnt be able to add other students
@@ -272,12 +286,12 @@ function StudentsPage({role = 'admin'}) {
           role={role}
           itemType='students'
           attributes={StudentsDisplayAttributes}
-          onDeleteItem={handleDelete}
+          onDeleteItem={handleDeleteButton}
           onEditItem={handleEdit}
         />
       </div>
 
-      {/* message popup */}
+      {/* adding message popup */}
       {popupMessageOpen && (
         <div className={`fixed z-40 right-0 top-0 bottom-0 flex items-center justify-center p-4 bg-black/50`}
           style={{ width: isSidebarOpen ? '90%' : '80%' }} // Adjust the width based on the sidebar state 
@@ -289,6 +303,22 @@ function StudentsPage({role = 'admin'}) {
             coursesOptions={courseOptions}
             onClose={() => setPopupMessageOpen(false)}
             onSubmit={handleAddStudent}
+          />
+        </div>
+      )}
+      
+      {/* confimration message of delete popup */}
+      {confirmationMessgeOpen && ( 
+        <div className={`fixed z-40 right-0 top-0 bottom-0 flex items-center justify-center p-4 bg-black/50`}
+            style={{ width: isSidebarOpen ? '90%' : '80%' }} // Adjust the width based on the sidebar state 
+            >
+          <ConfirmationMessage
+            onSubmit={() => {
+              handleDeleteStudent(itemToDelete); 
+              setConfirmationMessgeOpen(false);
+            } }
+            onClose={() => setConfirmationMessgeOpen(false)}
+           itemToDelete={itemToDelete}
           />
         </div>
       )}

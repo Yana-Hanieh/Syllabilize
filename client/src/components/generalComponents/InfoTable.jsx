@@ -16,7 +16,7 @@ function InfoTable({attributes=[],items=[],itemType='items', role='admin', onDel
             <table className="border border-neutral-300 rounded-2xl w-full">
                 <thead className=' border-b-2 border-red-700'>
                     {/* tr: element that defines a table row*/}
-                    <tr className='bg-primary text-white '>
+                    <tr className='bg-primary text-white'>
                         {attributes.map(attribute => (
                             //th:element that defines a table header (the data inside the header)
                             <th key={attribute.key} className="p-3 text-left "> {attribute.label}</th> 
@@ -80,7 +80,7 @@ function InfoTable({attributes=[],items=[],itemType='items', role='admin', onDel
                                                 onClick={() => onDeleteItem(item)}
                                                 title="Delete Item"
                                                 variant='danger'
-                                                className='px-2! w-fit! hover:bg-white dark:hover:bg-neutral-200'
+                                                className='px-2! w-fit! rounded-xl! hover:bg-white dark:hover:bg-neutral-200'
                                                 icon={<MdDelete className='text-lg'/>}
                                             />
 
