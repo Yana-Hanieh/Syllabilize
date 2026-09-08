@@ -181,14 +181,12 @@ function StudentsPage({role = 'admin'}) {
   
   //handles deleting a student
   const handleDeleteStudent = async (itemToDelete) => {
-    console.log('before targetId')
     const targetId = itemToDelete.userId || itemToDelete.studentId || itemToDelete.id //getting the id of the info card regarless if it is a student, course or a classroom id
-    console.log("after targetId")
+    
     if(!targetId){ //safety guard in case the passed item doesnt have an id 
       console.error('Could not find a valid ID to delete on item:', itemToDelete);
       return
     }
-    console.log("after targetid check")
 
     try{
       const res = await fetch(`http://localhost:3000/api/users/${targetId}`, {method: 'DELETE', credentials: 'include'});
@@ -214,7 +212,7 @@ function StudentsPage({role = 'admin'}) {
   //handler that triggers the add student popup message
   const handleAddButton = (itemToAdd) => {
     setPopupMessageOpen(true);
-    console.error("Open add modal for:", itemToAdd);
+    console.error("triggers add modal handler for:", itemToAdd);
   }
 
   //handles adding the data for the student into the form
@@ -306,7 +304,7 @@ function StudentsPage({role = 'admin'}) {
           />
         </div>
       )}
-      
+
       {/* confimration message of delete popup */}
       {confirmationMessgeOpen && ( 
         <div className={`fixed z-40 right-0 top-0 bottom-0 flex items-center justify-center p-4 bg-black/50`}

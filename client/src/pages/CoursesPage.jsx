@@ -5,17 +5,20 @@ import InfoCardsContainer from '../components/generalComponents/InfoCardsContain
 import InfoTable from "../components/generalComponents/InfoTable";
 import TabButton from "../components/reusableUiComponents/TabButton";
 import MessagePopup from "../components/reusableUiComponents/MessagePopup";
+import ConfirmationMessage from "../components/reusableUiComponents/ConfirmationMessage";
 import { IoMdAddCircle } from "react-icons/io";
 
 function CoursesPage({role}) {
   const { submitSearch, page, setPage, isSidebarOpen } = useOutletContext() || {};
   const [courses, setCourses] = useState([]);
+  const [itemToDelete, setItemToDelete] = useState(null);
 
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   
   const [popupMessageOpen, setPopupMessageOpen] = useState(false);
+  const [confirmationMessgeOpen, setConfirmationMessgeOpen] = useState(false)
 
   //fetch the data from the backend
   const fetchCourses = async () => {
@@ -80,7 +83,15 @@ function CoursesPage({role}) {
     );
   })
 
-  const handleDelete = async (itemToDelete) => {
+  //handler that triggers the delete course 
+  const handleDeleteButton = (item) => {
+    setItemToDelete(item);
+    setConfirmationMessgeOpen(true);
+    console.log("Triggering delete handler")
+  }
+  
+  //handles deleting a course
+  const handleDeleteCourse = async (itemToDelete) => {
     const targetId = itemToDelete.courseId || itemToDelete.id //getting the course id of the info card
     
     if(!targetId){ //safety guard in case the passed item doesnt have an id 
@@ -111,7 +122,7 @@ function CoursesPage({role}) {
 
   const handleAddButton = (itemToAdd) => {
     setPopupMessageOpen(true);
-    console.log('adding element',itemToAdd);
+    console.log('triggers add modal handler for:',itemToAdd);
   }
 
   const handleAddCourses = async (itemToAdd) => {
@@ -173,7 +184,7 @@ function CoursesPage({role}) {
           role={role}
           itemType='courses'
           attributes={CoursesDisplayAttributes}
-          onDeleteItem={(handleDelete)}
+          onDeleteItem={(handleDeleteButton)}
           onEditItem={handleEdit}
         />
       </div>
@@ -188,6 +199,22 @@ function CoursesPage({role}) {
             initialValues={null}
             onClose={() => setPopupMessageOpen(false)}
             onSubmit={handleAddCourses}
+          />
+        </div>
+      )}
+      
+      {/* confimration message of delete popup */}
+      {confirmationMessgeOpen && ( 
+        <div className={`fixed z-40 right-0 top-0 bottom-0 flex items-center justify-center p-4 bg-black/50`}
+            style={{ width: isSidebarOpen ? '90%' : '80%' }} // Adjust the width based on the sidebar state 
+            >
+          <ConfirmationMessage
+            onSubmit={() => {
+              handleDeleteCourse(itemToDelete); 
+              setConfirmationMessgeOpen(false);
+            } }
+            onClose={() => setConfirmationMessgeOpen(false)}
+           itemToDelete={itemToDelete}
           />
         </div>
       )}
