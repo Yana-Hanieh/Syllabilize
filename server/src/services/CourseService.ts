@@ -20,7 +20,7 @@ export class CourseService{
         //checks if there is a name
         //if there is, it checks if the "name" matches the value of any column in the db
         //if there isnt, name becomes an empty object(undefined) => dont filter by name
-        const where = name ? { name: {[Op.like]: `%${name}%`}} : {}; 
+        const where = name ? { courseName: {[Op.like]: `%${name}%`}} : {}; 
        
         const {count, rows} = await Course.findAndCountAll({
             where, 

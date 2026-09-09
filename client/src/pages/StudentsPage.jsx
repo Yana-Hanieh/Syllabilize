@@ -6,6 +6,7 @@ import InfoTable from "../components/generalComponents/InfoTable";
 import TabButton from "../components/reusableUiComponents/TabButton";
 import MessagePopup from "../components/reusableUiComponents/MessagePopup";
 import ConfirmationMessage from "../components/reusableUiComponents/ConfirmationMessage";
+import Pagination from "../components/reusableUiComponents/Pagination";
 import { IoMdAddCircle } from "react-icons/io";
 
 
@@ -30,7 +31,11 @@ function StudentsPage({role = 'admin'}) {
     setIsLoading(true);
     setError(null);
     try {
-      const params = new URLSearchParams({ page, limit: 15 });
+      const params = new URLSearchParams({ page: page.toString(), limit: 5 });
+
+      if (submitSearch){ //if the searched student is available, append the student's name in the url
+        params.append('name', submitSearch.trim())
+      }
       const res = await fetch(`http://localhost:3000/api/users?${params}`, {
         credentials: 'include',
       });
@@ -40,9 +45,11 @@ function StudentsPage({role = 'admin'}) {
       }
 
       const data = await res.json();
-      console.log(JSON.stringify(data.students[0], null, 2));
+      console.log('Student API response:', data);
+
       setStudents(data.students);
       setTotalPages(data.totalPages);
+      
     } catch (err) {
       setError(err.message);
     } finally {
@@ -124,18 +131,6 @@ function StudentsPage({role = 'admin'}) {
     { key: 'classroomId', label: 'Classroom', type: 'select', required: true, contexts: ['add', 'adminEdit'] },
     { key: 'pfp', label: 'ProfilePic', type: 'image', contexts: ['selfEdit'] },
 ]
-
-  //filtering student based on their name, email or std id for the search
-  const filteredStudents = students.filter((student) => {
-    if(!submitSearch)
-      return true;
-    const query = submitSearch.toLowerCase();
-    return(
-      student.userName?.toLowerCase().includes(query) || 
-      student.userEmail?.toLowerCase().includes(query) ||
-      student.studentId?.toString().includes(query)
-    );
-  })
 
   //handler that triggers the delete student 
   const handleDeleteButton = (item) => {
@@ -275,7 +270,7 @@ function StudentsPage({role = 'admin'}) {
       {/* information thats displayed in a table */}
       <div className='flex justify-center w-full'>
         <InfoTable
-          items={filteredStudents}
+          items={students} //we can use students directly here, since all the filtering is done in the backend
           role={role}
           itemType='students'
           attributes={StudentsDisplayAttributes}
@@ -316,6 +311,14 @@ function StudentsPage({role = 'admin'}) {
           />
         </div>
       )}
+
+      <div className="flex justify-center">
+        <Pagination 
+          page={page}
+          totalPages={totalPages}
+          setPage={setPage}        
+        />
+      </div>
 
     </div>
   )

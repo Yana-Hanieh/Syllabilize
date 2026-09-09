@@ -6,6 +6,7 @@ import InfoTable from "../components/generalComponents/InfoTable";
 import TabButton from "../components/reusableUiComponents/TabButton";
 import MessagePopup from "../components/reusableUiComponents/MessagePopup";
 import ConfirmationMessage from "../components/reusableUiComponents/ConfirmationMessage";
+import Pagination from "../components/reusableUiComponents/Pagination";
 import { IoMdAddCircle } from "react-icons/io";
 
 function ClassroomPage({role}) {
@@ -26,8 +27,13 @@ function ClassroomPage({role}) {
     setIsLoading(true);
     setError(null);
     try {
-      const params = new URLSearchParams({ page, limit: 15 });
+      const params = new URLSearchParams({ page: page.toString(), limit: 5 });
       // once backend supports it: if (submitSearch) params.append('search', submitSearch);
+
+      
+      if (submitSearch){ //if the searched classroom is available, append the student's name in the url
+        params.append('name', submitSearch.trim())
+      }
 
       const res = await fetch(`http://localhost:3000/api/classrooms?${params}`, {
         credentials: 'include'
@@ -71,15 +77,6 @@ function ClassroomPage({role}) {
     }
   ]
 
-  const filteredClassrooms = classrooms.filter((classroom) => {
-    if(!submitSearch)
-      return true;
-    const query = submitSearch.toLowerCase();
-    return(
-      classroom.classroomName?.toLowerCase().includes(query) || 
-      classroom.classroomId?.toString().includes(query)
-    );
-  })
 
    //handler that triggers the delete student 
   const handleDeleteButton = (item) => {
@@ -201,7 +198,7 @@ function ClassroomPage({role}) {
       {/* information thats displayed in a table */}
       <div className='flex justify-center'>
         <InfoTable
-          items={filteredClassrooms}
+          items={classrooms}
           role={role}
           itemType='classrooms'
           attributes={ClassroomAttributes}
@@ -240,6 +237,13 @@ function ClassroomPage({role}) {
           />
         </div>
       )}
+        <div className="flex justify-center">
+        <Pagination 
+          page={page}
+          totalPages={totalPages}
+          setPage={setPage}        
+        />
+      </div>
 
     </div>
   )
