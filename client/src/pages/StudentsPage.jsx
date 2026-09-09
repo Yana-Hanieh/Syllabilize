@@ -75,7 +75,7 @@ function StudentsPage({role = 'admin'}) {
   }, []);
 
   //used to display data in the student table
-  const StudentsDisplayAttributes = [
+  const StudentsAttributes = [
     {
       key: 'pfp', 
       label:'ProfilePic', 
@@ -106,7 +106,7 @@ function StudentsPage({role = 'admin'}) {
       type: 'number',
       required: true,
       value: (item) => item.studentId,
-      contexts:['']
+      contexts:[]
     },
     {
       key: 'userEmail', 
@@ -120,7 +120,7 @@ function StudentsPage({role = 'admin'}) {
     {
       key: 'courseIds', 
       label:'Courses', 
-      type: 'text',
+      type: 'multiselect',
       required: false,
       value: (item) => item.Courses?.map(course => course.courseName).join(', ') || 'No courses',
       contexts: ['add','adminEdit'] 
@@ -128,22 +128,12 @@ function StudentsPage({role = 'admin'}) {
     {
       key: 'classroom', 
       label:'Classroom', 
-      type: 'text',
+      type: 'select',
       required: true,
       value: (item) => item.classroom?.classroomName,
       contexts: ['add','adminEdit'] 
     }
   ]
-  
-//   const  = [
-//     { key: 'userName', label: 'Name', type: 'text', required: true, contexts: ['add'] },
-//     { key: 'studentAge', label: 'Age', type: 'number', required: true, contexts: ['add'] },
-//     { key: 'userEmail', label: 'Email', type: 'email', required: true, contexts: ['add', 'adminEdit', 'selfEdit'] },
-//     { key: 'userPassword', label: 'Password', type: 'password', required: true, contexts: ['add', 'selfEdit'] },
-//     { key: 'courseIds', label: 'Courses', type: 'multiselect', contexts: ['add', 'adminEdit'] },
-//     { key: 'classroomId', label: 'Classroom', type: 'select', required: true, contexts: ['add', 'adminEdit'] },
-//     { key: 'pfp', label: 'ProfilePic', type: 'image', contexts: ['selfEdit'] },
-// ]
 
   //filtering student based on their name, email or std id for the search
   const filteredStudents = students.filter((student) => {
@@ -227,7 +217,7 @@ function StudentsPage({role = 'admin'}) {
   const handleAddButton = (itemToAdd) => {
     setPopupMessageOpen(true);
     setItemToEdit(null)
-    console.error("triggers add modal handler for:", itemToAdd);
+    console.log("triggers add modal handler for:", itemToAdd);
   }
 
   //handles adding the data for the student into the form
@@ -298,7 +288,7 @@ function StudentsPage({role = 'admin'}) {
           items={filteredStudents}
           role={role}
           itemType='students'
-          attributes={StudentsDisplayAttributes}
+          attributes={StudentsAttributes}
           onDeleteItem={handleDeleteButton}
           onEditItem={handleEditButton}
         />
@@ -310,10 +300,10 @@ function StudentsPage({role = 'admin'}) {
           style={{ width: isSidebarOpen ? '90%' : '80%' }} // Adjust the width based on the sidebar state 
           >
           <MessagePopup
-            attributes={StudentsDisplayAttributes.filter(f => f.contexts.includes( itemToEdit? 'adminEdit':'add'))}
+            attributes={StudentsAttributes.filter(f => f.contexts?.includes( itemToEdit? 'adminEdit':'add'))}
             initialValues={itemToEdit}
             classroomOptions={classroomOptions}
-            coursesOptions={courseOptions}
+            courseOptions={courseOptions}
             onClose={() => setPopupMessageOpen(false)}
             onSubmit={itemToEdit ? handleEditStudent : handleAddStudent}
             classType={'Student'}

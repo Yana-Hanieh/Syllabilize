@@ -60,12 +60,16 @@ function CoursesPage({role}) {
     {
       key: 'courseName',
       label:'Name',
+      type:'text',
+      required: true,
       value: (item) => item.courseName,
       contexts: ['add', 'adminEdit'] 
     },
     {
       key: 'courseId',
       label:'ID',
+      type:'number',
+      required: true,
       value: (item) => item.courseId,
       contexts:[]
     }
@@ -131,7 +135,7 @@ function CoursesPage({role}) {
       });
 
       if (!res.ok){
-        throw new Error('Failed to edit Course');
+        throw new Error('Failed to edit Course', itemToEdit);
       }
       setPopupMessageOpen(false);
       fetchCourses(); //refresh the infotable automatically by fetching the data ny an api call

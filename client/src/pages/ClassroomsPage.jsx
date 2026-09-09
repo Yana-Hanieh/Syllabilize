@@ -12,6 +12,7 @@ function ClassroomPage({role}) {
   const { submitSearch, page, setPage, isSidebarOpen } = useOutletContext() || {};
   const [classrooms, setClassrooms] = useState([]);
   const [itemToDelete, setItemToDelete] = useState(null);
+  const [itemToEdit, setItemToEdit] = useState(null);
 
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
@@ -51,25 +52,22 @@ function ClassroomPage({role}) {
   }, [page, submitSearch]);
 
   //used to display data in the student table
-  const ClassroomDisplayAttributes = [
+  const ClassroomAttributes = [
     {
       key:'classroomName', 
       label:'Name', 
-      value: (item) => item.classroomName
+      type:'text',
+      required: true,
+      value: (item) => item.classroomName,
+      contexts: ['add', 'adminEdit'] 
     },
     {
       key:'classroomId', 
       label:'ID', 
-      value: (item) => item.classroomId
-    }
-  ]
-
-  //used to display data in the add courses form 
-  const ClassroomDataEntryAttributes = [
-    {
-      key:'classroomName', 
-      label:'Name', 
-      value: (item) => item.classroomName
+      type:'number',
+      required: true,
+      value: (item) => item.classroomId,
+      contexts:[]
     }
   ]
 
@@ -116,16 +114,39 @@ function ClassroomPage({role}) {
     }
    
   }
-  const handleEditButton = (itemToEdit) => {
+  const handleEditButton = (item) => {
+    setItemToEdit(item);
+    setPopupMessageOpen(true);
     console.log("Open edit modal for:", itemToEdit);
   };
 
+  const handleEditClassroom = async (itemToEdit) => {
+    try{
+      const res = await fetch(`http://localhost:3000/api/classrooms/${itemToEdit.classroomId}`, {
+        method: 'PUT',
+        credentials: 'include', 
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(itemToEdit)
+      });
+
+      if(!res.ok){
+        throw new Error('Failed to edit Classroom', itemToEdit);
+      }
+      setPopupMessageOpen(false);
+      fetchClassrooms();
+    }
+    catch(error){
+      console.error('Failed to edit classroom', error)
+    }
+  }
+
   const handleAddButton = (itemToAdd) => {
     setPopupMessageOpen(true);
-    console.log('adding element',itemToAdd);
+    setItemToEdit(null)
+    console.log('triggers edit modal handler for: ',itemToAdd);
   };
 
-  const handleAddClassrooms = async (itemToAdd) => {
+  const handleAddClassroom = async (itemToAdd) => {
     try{
       const res = await fetch(`http://localhost:3000/api/classrooms`, {
       method: 'POST',
@@ -183,7 +204,7 @@ function ClassroomPage({role}) {
           items={filteredClassrooms}
           role={role}
           itemType='classrooms'
-          attributes={ClassroomDisplayAttributes}
+          attributes={ClassroomAttributes}
           onDeleteItem={handleDeleteButton}
           onEditItem={handleEditButton}
         />
@@ -195,10 +216,11 @@ function ClassroomPage({role}) {
           style={{ width: isSidebarOpen ? '90%' : '80%' }} // Adjust the width based on the sidebar state 
           >
           <MessagePopup
-            attributes={ClassroomDataEntryAttributes}
-            initialValues={null}
+            attributes={ClassroomAttributes.filter(f => f.contexts.includes(itemToEdit ? 'adminEdit' : 'add'))}
+            initialValues={itemToEdit}
             onClose={() => setPopupMessageOpen(false)}
-            onSubmit={handleAddClassrooms}
+            onSubmit={itemToEdit? handleEditClassroom : handleAddClassroom}
+            classType={'Classroom'}
           />
         </div>
       )}
