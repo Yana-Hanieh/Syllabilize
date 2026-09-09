@@ -37,8 +37,8 @@ export class CourseController{
 
     async update(req:Request, res:Response){
         const id = Number(req.params.id);
-        const {newCourseName, newStudentId} = req.body
-        const result = await courseService.update(id,newCourseName, newStudentId);
+        const {courseName, studentIds} = req.body
+        const result = await courseService.update(id,courseName, studentIds);
         if (!result){
             return res.status(404).json({message: 'Course not found'})
         }

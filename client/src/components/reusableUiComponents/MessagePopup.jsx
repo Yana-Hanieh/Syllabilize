@@ -30,7 +30,9 @@ function MessagePopup({attributes, initialValues=[], classType, coursesOptions, 
     }
     
     return (   
-    <form className="bg-neutral-100 rounded-xl dark:bg-white justify-items-center p-4 "> 
+    <form 
+        onSubmit={handleSubmit}
+        className="bg-neutral-100 rounded-xl dark:bg-white justify-items-center p-4 "> 
         {/* cancel button */}
         <TabButton 
                 type='button'
@@ -66,7 +68,6 @@ function MessagePopup({attributes, initialValues=[], classType, coursesOptions, 
         {/* submit button */}
         <TabButton 
             type="submit"
-            onClick={handleSubmit}
             variant="default"
             label="save"
             className='w-1/2! py-1.5! justify-center text-center! bg-primary text-white hover:bg-secondary hover:text-black'
