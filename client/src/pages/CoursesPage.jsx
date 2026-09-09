@@ -12,6 +12,8 @@ function CoursesPage({role}) {
   const { submitSearch, page, setPage, isSidebarOpen } = useOutletContext() || {};
   const [courses, setCourses] = useState([]);
   const [itemToDelete, setItemToDelete] = useState(null);
+  const [itemToEdit, setItemToEdit] = useState(null);
+  
 
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
@@ -39,7 +41,7 @@ function CoursesPage({role}) {
 
       const data = await res.json();
       console.log('classroomAPI response', data);
-      console.log('sample classroom:', data.courses?.[0]);
+      console.log('sample course:', data.courses?.[0]);
       setCourses(data.courses ?? []);
       setTotalPages(data.totalPages);
     } catch (err) {
@@ -54,7 +56,7 @@ function CoursesPage({role}) {
   }, [page, submitSearch]);
 
   //used to display data in the student table
-  const CoursesDisplayAttributes = [
+  const CourseAttributes = [
     {
       key: 'courseName',
       label:'Name',
@@ -65,24 +67,17 @@ function CoursesPage({role}) {
       key: 'courseId',
       label:'ID',
       value: (item) => item.courseId,
+      contexts:[]
     }
   ]
 
- //used to display data in the add courses form 
-  const CoursesDataEntryAttributes = [
-    {
-      key: 'courseName',
-      label:'Name',
-      value: (item) => item.courseName}
-  ]
-
-  const filteredCourses = courses.filter((classroom) => {
+  const filteredCourses = courses.filter((course) => {
     if(!submitSearch)
       return true;
     const query = submitSearch.toLowerCase();
     return(
-      classroom.courseName?.toLowerCase().includes(query) || 
-      classroom.courseId?.toString().includes(query)
+      course.courseName?.toLowerCase().includes(query) || 
+      course.courseId?.toString().includes(query)
     );
   })
 
@@ -119,16 +114,40 @@ function CoursesPage({role}) {
     }
   }
 
-  const handleEdit = (itemToEdit) => {
+  const handleEditButton = (item) => {
+    setItemToEdit(item);
+    setPopupMessageOpen(true);
     console.log("Open edit modal for:", itemToEdit);
   };
 
-  const handleAddButton = (itemToAdd) => {
-    setPopupMessageOpen(true);
-    console.log('triggers add modal handler for:',itemToAdd);
+ //handles editing course info (name)
+  const handleEditCourse = async (itemToEdit) => {
+    try{
+      const res = await fetch(`http://localhost:3000/api/courses/${itemToEdit.courseId}`, {
+        method: 'PUT',
+        credentials: 'include', 
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(itemToEdit)
+      });
+
+      if (!res.ok){
+        throw new Error('Failed to edit Course');
+      }
+      setPopupMessageOpen(false);
+      fetchCourses(); //refresh the infotable automatically by fetching the data ny an api call
+    }
+    catch(error){
+      console.error('Failed to edit course', error)
+    }
   }
 
-  const handleAddCourses = async (itemToAdd) => {
+ //handles adding course info (name)
+  const handleAddButton = (itemToAdd) => {
+    setPopupMessageOpen(true);
+    setItemToEdit(null);
+    console.log("triggers edit modal handler for:",itemToAdd);
+  }
+  const handleAddCourse = async (itemToAdd) => {
     try{
       const res = await fetch(`http://localhost:3000/api/courses`, {
       method: 'POST',
@@ -186,9 +205,9 @@ function CoursesPage({role}) {
           items={filteredCourses}
           role={role}
           itemType='courses'
-          attributes={CoursesDisplayAttributes}
+          attributes={CourseAttributes}
           onDeleteItem={(handleDeleteButton)}
-          onEditItem={handleEdit}
+          onEditItem={handleEditButton}
         />
       </div>
       
@@ -198,10 +217,12 @@ function CoursesPage({role}) {
           style={{ width: isSidebarOpen ? '90%' : '80%' }} // Adjust the width based on the sidebar state 
           >
           <MessagePopup
-            attributes={CoursesDataEntryAttributes}
-            initialValues={null}
+          //checks if itemToEdit state is true/created then its adminEdit, if its false/uncreated then we're adding a new course
+            attributes={CourseAttributes.filter(f => f.contexts.includes(itemToEdit ? 'adminEdit' : 'add'))}
+            initialValues={itemToEdit}
             onClose={() => setPopupMessageOpen(false)}
-            onSubmit={handleAddCourses}
+            onSubmit={itemToEdit ? handleEditCourse : handleAddCourse}
+            classType={'Course'}
           />
         </div>
       )}

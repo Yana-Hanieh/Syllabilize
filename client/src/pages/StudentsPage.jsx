@@ -79,24 +79,40 @@ function StudentsPage({role = 'admin'}) {
     {
       key: 'pfp', 
       label:'ProfilePic', 
+      type: 'image',
+      required: false,
       value: (item) => item.profilePicUrl,
       contexts: ['selfEdit'] 
     },
     {
       key: 'userName', 
       label:'Name', 
+      type: 'text',
+      required: true,
       value: (item) => item.userName,
       contexts: ['add'] 
     },
+     {
+      key: 'userPassword', 
+      label:'Password', 
+      type: 'password',
+      required: true,
+      value: (item) => item.userPassword,
+      contexts: ['add', 'selfEdit'] 
+    },
     {
-      
       key: 'studentId', 
       label:'ID', 
+      type: 'number',
+      required: true,
       value: (item) => item.studentId,
+      contexts:['']
     },
     {
       key: 'userEmail', 
       label:'Email', 
+      type: 'email',
+      required: true,
       value: (item) => item.userEmail,
       contexts: ['add','selfEdit','adminEdit'] 
 
@@ -104,26 +120,30 @@ function StudentsPage({role = 'admin'}) {
     {
       key: 'courseIds', 
       label:'Courses', 
+      type: 'text',
+      required: false,
       value: (item) => item.Courses?.map(course => course.courseName).join(', ') || 'No courses',
       contexts: ['add','adminEdit'] 
     },
     {
       key: 'classroom', 
       label:'Classroom', 
+      type: 'text',
+      required: true,
       value: (item) => item.classroom?.classroomName,
-      contexts: ['add','selfEdit'] 
+      contexts: ['add','adminEdit'] 
     }
   ]
   
-  const StudentAttributes = [
-    { key: 'userName', label: 'Name', type: 'text', required: true, contexts: ['add'] },
-    { key: 'studentAge', label: 'Age', type: 'number', required: true, contexts: ['add'] },
-    { key: 'userEmail', label: 'Email', type: 'email', required: true, contexts: ['add', 'adminEdit', 'selfEdit'] },
-    { key: 'userPassword', label: 'Password', type: 'password', required: true, contexts: ['add', 'selfEdit'] },
-    { key: 'courseIds', label: 'Courses', type: 'multiselect', contexts: ['add', 'adminEdit'] },
-    { key: 'classroomId', label: 'Classroom', type: 'select', required: true, contexts: ['add', 'adminEdit'] },
-    { key: 'pfp', label: 'ProfilePic', type: 'image', contexts: ['selfEdit'] },
-]
+//   const  = [
+//     { key: 'userName', label: 'Name', type: 'text', required: true, contexts: ['add'] },
+//     { key: 'studentAge', label: 'Age', type: 'number', required: true, contexts: ['add'] },
+//     { key: 'userEmail', label: 'Email', type: 'email', required: true, contexts: ['add', 'adminEdit', 'selfEdit'] },
+//     { key: 'userPassword', label: 'Password', type: 'password', required: true, contexts: ['add', 'selfEdit'] },
+//     { key: 'courseIds', label: 'Courses', type: 'multiselect', contexts: ['add', 'adminEdit'] },
+//     { key: 'classroomId', label: 'Classroom', type: 'select', required: true, contexts: ['add', 'adminEdit'] },
+//     { key: 'pfp', label: 'ProfilePic', type: 'image', contexts: ['selfEdit'] },
+// ]
 
   //filtering student based on their name, email or std id for the search
   const filteredStudents = students.filter((student) => {
@@ -196,8 +216,8 @@ function StudentsPage({role = 'admin'}) {
         throw new Error('Failed to edit student');
       }
 
-      setPopupMessageOpen(false);
-      fetchStudents();
+      setPopupMessageOpen(false); //close the popup message
+      fetchStudents(); //refresh the infotable automatically by fetching the data ny an api call
     } catch(error){
       console.error('Failed to edit student:', error);
     }
@@ -290,7 +310,7 @@ function StudentsPage({role = 'admin'}) {
           style={{ width: isSidebarOpen ? '90%' : '80%' }} // Adjust the width based on the sidebar state 
           >
           <MessagePopup
-            attributes={StudentAttributes.filter(f => f.contexts.includes( itemToEdit? 'adminEdit':'add'))}
+            attributes={StudentsDisplayAttributes.filter(f => f.contexts.includes( itemToEdit? 'adminEdit':'add'))}
             initialValues={itemToEdit}
             classroomOptions={classroomOptions}
             coursesOptions={courseOptions}
